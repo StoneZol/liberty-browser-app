@@ -39,6 +39,7 @@ export const useLibertyCoreStore = () => {
 
     const setStoreData = <T>(data: T) => {
         const { passHash } = usePassStore.getState()
+
         const encryptedData = libertyCore.obj.encrypt({ obj: data, key: passHash })
         ls.setData('LibertyStore', encryptedData)
     }

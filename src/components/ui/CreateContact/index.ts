@@ -1,2 +1,1 @@
-export {default as CreateContact} from './CreateContact';
-export type { CreateContactProps } from './CreateContact.types';
+export { default as CreateContact } from './CreateContact';

@@ -185,11 +185,22 @@ type AlertDialogComponentProps = {
     actionText: string
     cancelText: string
     onContinue: () => void
+    open?: boolean
+    onOpenChange?: (open: boolean) => void
 }
 
-export function AlertDialogComponent({ children, title, description, onContinue, actionText = 'Continue', cancelText = 'Cancel' }: AlertDialogComponentProps) {
+export function AlertDialogComponent({
+    children,
+    title,
+    description,
+    onContinue,
+    actionText = 'Continue',
+    cancelText = 'Cancel',
+    open,
+    onOpenChange,
+}: AlertDialogComponentProps) {
     return (
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogTrigger asChild>
                 {children}
             </AlertDialogTrigger>

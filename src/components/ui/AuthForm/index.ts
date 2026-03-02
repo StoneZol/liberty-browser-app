@@ -1,2 +1,1 @@
-export {default as AuthForm} from './AuthForm';
-export type { AuthFormProps } from './AuthForm.types';
+export { default as AuthForm } from './AuthForm';

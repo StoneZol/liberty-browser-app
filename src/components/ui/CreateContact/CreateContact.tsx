@@ -7,7 +7,11 @@ import useCreateContactHook from './CreateContact.hooks';
 import { Separator } from '../separator';
 import { TemplatePopover } from '../popover';
 
-const CreateContact = () => {
+interface CreateContactProps {
+    onDone?: () => void;
+}
+
+const CreateContact = ({ onDone }: CreateContactProps) => {
     const { form, onSubmit, handleNoiseLengthChange } = useCreateContactHook()
     const seedPhrase = form.watch('seedPhrase')
     const tag = form.watch('tag')
@@ -140,7 +144,14 @@ const CreateContact = () => {
                 </p>
             </section>
 
-            <Button type='button' className='self-end' onClick={form.handleSubmit(onSubmit)}>
+            <Button
+                type='button'
+                className='self-end'
+                onClick={form.handleSubmit(() => {
+                    onSubmit();
+                    onDone?.();
+                })}
+            >
                 Create Contact
             </Button>
         </form>

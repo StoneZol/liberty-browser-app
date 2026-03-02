@@ -2,6 +2,7 @@ import { z } from "zod"
 
 export const ContactSchema = z.object({
     id: z.string(),
+    hash: z.string(),
     seedHash: z.string(),
     tag: z.string(),
     noiseLength: z.number(),
