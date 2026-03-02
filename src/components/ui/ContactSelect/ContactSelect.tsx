@@ -70,16 +70,20 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                         No contacts found. Try a different query or create a new one.
                     </p>
                 ) : (
-                    visibleContacts.map((contact) => (
-                        <button
-                            key={contact.id}
-                            type="button"
-                            className="flex flex-col items-start gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
-                            onClick={() => handleSelect(contact)}
-                        >
-                            {`[${contact.tag}] ${contact.description || "No description"}`}
-                        </button>
-                    ))
+                    visibleContacts.map((contact) => {
+                        const isActive = contact.id === selected?.id;
+                        return (
+                            <button
+                                key={contact.id}
+                                type="button"
+                                className={`flex flex-col items-start gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground ${isActive ? "bg-accent text-accent-foreground" : ""
+                                    }`}
+                                onClick={() => handleSelect(contact)}
+                            >
+                                {`[${contact.tag}] ${contact.description || "No description"}`}
+                            </button>
+                        );
+                    })
                 )}
             </div>
         </TemplatePopover>
