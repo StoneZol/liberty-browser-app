@@ -17,6 +17,7 @@ function PopoverTrigger({
 
 function PopoverContent({
     className,
+    children,
     align = "center",
     sideOffset = 4,
     ...props
@@ -32,7 +33,10 @@ function PopoverContent({
                     className
                 )}
                 {...props}
-            />
+            >
+                {children}
+                <PopoverPrimitive.Arrow />
+            </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
     )
 }
@@ -76,6 +80,23 @@ function PopoverDescription({
     )
 }
 
+interface TemplatePopoverProps extends React.ComponentProps<typeof PopoverContent> {
+    trigger: React.ReactNode
+}
+
+function TemplatePopover({ trigger, children, ...contentProps }: TemplatePopoverProps) {
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                {trigger}
+            </PopoverTrigger>
+            <PopoverContent {...contentProps}>
+                {children}
+            </PopoverContent>
+        </Popover>
+    )
+}
+
 export {
     Popover,
     PopoverTrigger,
@@ -84,4 +105,5 @@ export {
     PopoverHeader,
     PopoverTitle,
     PopoverDescription,
+    TemplatePopover,
 }

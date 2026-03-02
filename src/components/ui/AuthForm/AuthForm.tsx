@@ -1,42 +1,12 @@
-import { useLibertyCoreStore } from "@/hooks/useLibertyCore";
 import { Button } from "../button";
-import useScreenStore from "@/stores/screenStore";
 import { Input } from "../input";
 import { Label } from "../label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { AuthFormSchema, type AuthFormSchemaType } from "./AuthForm.types";
+import useAuthFormHook from "./AuthForm.hooks";
+import { AlertDialogComponent } from './../alert-dialog';
 
 
 const AuthForm = () => {
-    const { deleteAllData, getStoreData, getHash, derivePassword, getResetPassHash } = useLibertyCoreStore()
-    const { setScreen } = useScreenStore()
-    const handleResetData = () => {
-        deleteAllData()
-        setScreen('reg')
-    }
-    const form = useForm({
-        resolver: zodResolver(AuthFormSchema),
-        defaultValues: {
-            Password: '',
-        }
-    })
-    const onSubmit = (data: AuthFormSchemaType) => {
-        const passwordHash = getHash(data.Password)
-        console.log(passwordHash)
-        console.log(getResetPassHash())
-        if (passwordHash === getResetPassHash()) {
-            console.log('Ahting  надо удалять все данные')
-            // handleResetData()
-            return
-        }
-        derivePassword(passwordHash)
-        const storeData = getStoreData()
-        if (storeData.data.user === 'anon') {
-            console.log('Anon user')
-        }
-
-    }
+    const { form, onSubmit, handleResetData } = useAuthFormHook()
     return (
         <section className="flex flex-col gap-4 p-4">
             <h2 className="text-2xl font-bold">Welcome back Anon!</h2>
@@ -44,10 +14,19 @@ const AuthForm = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input type="password" placeholder="Password" id="password" {...form.register('Password')} />
                 <Button type="button" onClick={form.handleSubmit(onSubmit)}>SignIn</Button>
-                <Button type="button" onClick={handleResetData}>ResetAllData</Button>
+
+                <AlertDialogComponent
+                    onContinue={handleResetData}
+                    title="Reset All Data"
+                    description="U have a hard day Anon. Do u want to reset all data and reborn?"
+                    actionText="Reborn"
+                    cancelText="Cancel"
+                >
+                    <Button type="button" variant="destructive">ResetAllData</Button>
+                </AlertDialogComponent>
             </form>
         </section>
     );
 };
 
-export default AuthForm;
+export default AuthForm

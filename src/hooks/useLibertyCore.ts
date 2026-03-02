@@ -1,12 +1,12 @@
 
 import { ls } from "@/lib/localstorage"
+import type { LibertyStore } from "@/lib/types"
+import usePassStore from "@/stores/passStore"
 import { libertyCore } from "liberty-core"
-import { useRef } from "react"
 
 export const useLibertyCoreStore = () => {
-    const passwordRef = useRef('')
+    const { setPassHash } = usePassStore()
     const hasReg = ls.getData('LibertyStore') !== ''
-
 
     const getSalt = () => {
         return ls.getData('salt')
@@ -18,9 +18,10 @@ export const useLibertyCoreStore = () => {
 
     const derivePassword = (pass: string) => {
         const hashpass = libertyCore.crypto.deriveKey(pass, getSalt())
-        passwordRef.current = hashpass
+        setPassHash(hashpass)
         return hashpass
     }
+
     const deleteAllData = () => {
         ls.removeData('salt')
         ls.removeData('resetPassHash')
@@ -31,12 +32,14 @@ export const useLibertyCoreStore = () => {
         return libertyCore.crypto.hash(str)
     }
 
-    const getStoreData = () => {
-        return libertyCore.obj.decrypt({ str: ls.getData('LibertyStore'), key: passwordRef.current })
+    const getStoreData = (): LibertyStore => {
+        const { passHash } = usePassStore.getState()
+        return libertyCore.obj.decrypt({ str: ls.getData('LibertyStore'), key: passHash })
     }
 
     const setStoreData = <T>(data: T) => {
-        const encryptedData = libertyCore.obj.encrypt({ obj: data, key: passwordRef.current })
+        const { passHash } = usePassStore.getState()
+        const encryptedData = libertyCore.obj.encrypt({ obj: data, key: passHash })
         ls.setData('LibertyStore', encryptedData)
     }
 

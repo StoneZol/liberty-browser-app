@@ -3,6 +3,7 @@ import RegForm from '../RegForm/RegForm';
 import useScreenStore from '@/stores/screenStore';
 import { useLibertyCoreStore } from '@/hooks/useLibertyCore';
 import { useEffect } from 'react';
+import { MainScreen } from '../MainScreen';
 const ScreenController = () => {
     const { hasReg } = useLibertyCoreStore()
     const { screen, setScreen } = useScreenStore()
@@ -17,7 +18,7 @@ const ScreenController = () => {
         case 'login':
             return <AuthForm />
         case 'main':
-            return <div>Main</div>
+            return <MainScreen />
         default:
             return null
     }
