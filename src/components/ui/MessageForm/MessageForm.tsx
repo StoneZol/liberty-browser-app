@@ -2,6 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 import { Button } from "../button";
 import type { MessageFormProps } from "./MessageForm.types";
 import { useMessageForm } from "./MessageForm.hooks";
+import CanvasSecureTextInput from "./CanvasSecureTextInput";
+import CanvasSecureTextOutput from "./CanvasSecureTextOutput";
 
 const MessageForm = ({ contact }: MessageFormProps) => {
 
@@ -31,20 +33,20 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsList>
 
                 <TabsContent value="encrypt" className="flex flex-col gap-3">
-                    <textarea
-                        placeholder="Plain message goes here…"
+                    <CanvasSecureTextInput
                         value={plain}
-                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setPlain(event.target.value)}
-                        className="min-h-[120px] rounded-md border bg-background px-3 py-2 text-sm font-normal"
+                        onChange={setPlain}
+                        placeholder="Plain message goes here…"
                     />
-                    <textarea
-                        placeholder="Encrypted message will appear here…"
-                        value={cipher}
-                        readOnly
-                        className="min-h-[120px] rounded-md border bg-muted px-3 py-2 text-xs font-mono"
-                    />
-                    {error && <p className="text-xs text-destructive">{error}</p>}
-                    <div className="flex justify-end">
+                    <CanvasSecureTextOutput value={cipher} />
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            type="button"
+                            size="sm"
+                            onClick={handlePaste}
+                        >
+                            Paste
+                        </Button>
                         <Button
                             type="button"
                             size="sm"
@@ -57,19 +59,13 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsContent>
 
                 <TabsContent value="decrypt" className="flex flex-col gap-3">
-                    <textarea
-                        placeholder="Paste encrypted message…"
+                    <CanvasSecureTextInput
                         value={cipher}
-                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setCipher(event.target.value)}
-                        className="min-h-[120px] rounded-md border bg-background px-3 py-2 text-xs font-mono"
+                        onChange={setCipher}
+                        placeholder="Paste encrypted message…"
                     />
-                    <textarea
-                        placeholder="Decrypted message will appear here…"
-                        value={plain}
-                        readOnly
-                        className="min-h-[120px] rounded-md border bg-muted px-3 py-2 text-sm"
-                    />
-                    {error && <p className="text-xs text-destructive">{error}</p>}
+                    <CanvasSecureTextOutput value={plain} />
+                    <p className="text-xs text-muted-foreground">{error}</p>
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"

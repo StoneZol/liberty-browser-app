@@ -20,7 +20,10 @@ export const useMessageForm = ({ contact }: MessageFormProps) => {
 
     const handlePaste = async () => {
         const text = await clipBoard.paste();
-        if (text) {
+        if (text && mode === "encrypt") {
+            setPlain(text);
+        }
+        if (text && mode === "decrypt") {
             setCipher(text);
         }
     }
