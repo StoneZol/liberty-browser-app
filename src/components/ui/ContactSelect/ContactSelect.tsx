@@ -4,6 +4,7 @@ import { Button } from "../button";
 import { TemplatePopover } from "../popover";
 import { Input } from "../input";
 import useContactSelect from "./ContactSelect.hooks";
+import CanvasContactLabel from "./CanvasContactLabel";
 
 interface ContactSelectProps {
     value?: string | null;
@@ -45,17 +46,17 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                     variant="outline"
                     className="w-full justify-between"
                 >
-                    {selected
-                        ? (
-                            <span className="text-left">
-                                {`[${selected.tag}] ${selected.description || "No description"}`}
-                            </span>
-                        ) : (
-                            <span className="text-sm text-muted-foreground">
-                                Select contact
-                            </span>
-                        )
-                    }
+                    {selected ? (
+                        <div className="flex-1 text-left">
+                            <CanvasContactLabel
+                                label={`[${selected.tag}] ${selected.description || "No description"}`}
+                            />
+                        </div>
+                    ) : (
+                        <span className="text-sm text-muted-foreground">
+                            Select contact
+                        </span>
+                    )}
                     <span className="ml-2 text-xs text-muted-foreground">
                         ▼
                     </span>
@@ -64,7 +65,7 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
             sideOffset={8}
             onOpenChange={handleOpenChange}
         >
-            <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
+            <div className="flex flex-col gap-2 max-h-64 overflow-y-auto p-2">
                 <Input
                     placeholder="Search by tag or description…"
                     className="h-8 text-xs"
@@ -78,6 +79,7 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                 ) : (
                     visibleContacts.map((contact) => {
                         const isActive = contact.id === selected?.id;
+                        const label = `[${contact.tag}] ${contact.description || "No description"}`;
                         return (
                             <button
                                 key={contact.id}
@@ -86,7 +88,7 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                                     }`}
                                 onClick={() => handleSelect(contact)}
                             >
-                                {`[${contact.tag}] ${contact.description || "No description"}`}
+                                <CanvasContactLabel label={label} />
                             </button>
                         );
                     })

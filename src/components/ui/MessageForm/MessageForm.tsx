@@ -8,7 +8,10 @@ import CanvasSecureTextOutput from "./CanvasSecureTextOutput";
 const MessageForm = ({ contact }: MessageFormProps) => {
 
 
-    const { mode, plain, cipher, error, handleModeChange, handlePaste, handleEncrypt, handleDecrypt, setPlain, setCipher } = useMessageForm({ contact });
+    const { mode, plain, cipher, error,
+        handleModeChange, handlePaste, handleEncrypt,
+        handleClearPlain, handleClearCipher, handleDecrypt,
+        setPlain, setCipher } = useMessageForm({ contact });
 
 
     return (
@@ -40,7 +43,11 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                     />
                     <CanvasSecureTextOutput value={cipher} />
                     <div className="flex justify-end gap-2">
+                        <Button variant="destructive" size="sm" onClick={handleClearPlain}>
+                            Clear
+                        </Button>
                         <Button
+                            variant="outline"
                             type="button"
                             size="sm"
                             onClick={handlePaste}
@@ -67,7 +74,11 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                     <CanvasSecureTextOutput value={plain} />
                     <p className="text-xs text-muted-foreground">{error}</p>
                     <div className="flex justify-end gap-2">
+                        <Button variant="destructive" size="sm" onClick={handleClearCipher}>
+                            Clear
+                        </Button>
                         <Button
+                            variant="outline"
                             type="button"
                             size="sm"
                             onClick={handlePaste}

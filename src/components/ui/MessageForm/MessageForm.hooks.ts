@@ -27,6 +27,12 @@ export const useMessageForm = ({ contact }: MessageFormProps) => {
             setCipher(text);
         }
     }
+    const handleClearPlain = () => {
+        setPlain("");
+    }
+    const handleClearCipher = () => {
+        setCipher("");
+    }
     const handleEncrypt = async () => {
         if (!contact) {
             setError("Pick a contact first, anon.");
@@ -69,6 +75,8 @@ export const useMessageForm = ({ contact }: MessageFormProps) => {
         error,
         handleModeChange,
         handlePaste,
+        handleClearPlain,
+        handleClearCipher,
         handleEncrypt,
         handleDecrypt,
         setPlain,
