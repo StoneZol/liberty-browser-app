@@ -1,30 +1,35 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/useTheme";
+import type { SecureCanvasSize } from "./SecureCanvasContainer.types";
 
-interface SecureCanvasContainerProps {
-    children: (size: { width: number; height: number }) => React.ReactNode;
-    className?: string;
-    minHeight?: number;
-    radius?: number;
-    enableResize?: boolean;
-    tabIndex?: number;
-    onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+interface UseSecureCanvasContainerParams {
+    minHeight: number;
+    radius: number;
+    enableResize: boolean;
 }
 
-const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
-    children,
-    className,
-    minHeight = 120,
-    radius = 40,
-    enableResize = true,
-    tabIndex,
-    onKeyDown,
-}) => {
-    const containerRef = React.useRef<HTMLDivElement | null>(null);
-    const [size, setSize] = React.useState({ width: 0, height: minHeight });
+interface UseSecureCanvasContainerResult {
+    containerRef: React.RefObject<HTMLDivElement | null>;
+    size: SecureCanvasSize;
+    overlayStyle: React.CSSProperties;
+    handleMouseMove: (event: React.MouseEvent<HTMLDivElement>) => void;
+    handleMouseLeave: () => void;
+    handleContainerTouchMove: (event: React.TouchEvent<HTMLDivElement>) => void;
+    handleContainerTouchEnd: () => void;
+    handleResizeStart: (event: React.MouseEvent<HTMLDivElement>) => void;
+    handleTouchResizeStart: (event: React.TouchEvent<HTMLDivElement>) => void;
+}
+
+const useSecureCanvasContainer = ({
+    minHeight,
+    radius,
+    enableResize,
+}: UseSecureCanvasContainerParams): UseSecureCanvasContainerResult => {
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    const [size, setSize] = React.useState<SecureCanvasSize>({ width: 0, height: minHeight });
     const [spot, setSpot] = React.useState<{ x: number; y: number } | null>(null);
     const isDark = useTheme();
+
     React.useLayoutEffect(() => {
         if (containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
@@ -69,7 +74,7 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
         if (!enableResize) return;
         event.preventDefault();
 
-        const handleMouseMove = (moveEvent: MouseEvent) => {
+        const handleMouseMoveInner = (moveEvent: MouseEvent) => {
             const rect = containerRef.current?.getBoundingClientRect();
             if (!rect) return;
 
@@ -86,12 +91,12 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
             }
         };
 
-        const handleMouseUp = () => {
-            window.removeEventListener("mousemove", handleMouseMove);
+        const handleMouseUpInner = () => {
+            window.removeEventListener("mousemove", handleMouseMoveInner);
         };
 
-        window.addEventListener("mousemove", handleMouseMove);
-        window.addEventListener("mouseup", handleMouseUp, { once: true });
+        window.addEventListener("mousemove", handleMouseMoveInner);
+        window.addEventListener("mouseup", handleMouseUpInner, { once: true });
     };
 
     const handleTouchResizeStart = (event: React.TouchEvent<HTMLDivElement>) => {
@@ -100,7 +105,7 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
 
         event.preventDefault();
 
-        const handleTouchMove = (moveEvent: TouchEvent) => {
+        const handleTouchMoveInner = (moveEvent: TouchEvent) => {
             if (moveEvent.touches.length === 0) return;
 
             // не даём браузеру воспринимать этот жест как скролл
@@ -122,13 +127,13 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
             }
         };
 
-        const handleTouchEnd = () => {
-            window.removeEventListener("touchmove", handleTouchMove);
-            window.removeEventListener("touchend", handleTouchEnd);
+        const handleTouchEndInner = () => {
+            window.removeEventListener("touchmove", handleTouchMoveInner);
+            window.removeEventListener("touchend", handleTouchEndInner);
         };
 
-        window.addEventListener("touchmove", handleTouchMove);
-        window.addEventListener("touchend", handleTouchEnd);
+        window.addEventListener("touchmove", handleTouchMoveInner);
+        window.addEventListener("touchend", handleTouchEndInner);
     };
 
     const overlayStyle: React.CSSProperties = spot
@@ -139,36 +144,18 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
             backgroundColor: isDark ? "rgba(0,0,0,1)" : "rgb(230, 230, 230)",
         };
 
-    return (
-        <div
-            ref={containerRef}
-            tabIndex={tabIndex}
-            className={cn(
-                "relative w-full rounded-lg bg-muted overflow-hidden outline",
-                className
-            )}
-            style={{ height: size.height || minHeight, minHeight, touchAction: "none" }}
-            onKeyDown={onKeyDown}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onTouchMove={handleContainerTouchMove}
-            onTouchEnd={handleContainerTouchEnd}
-            onTouchCancel={handleContainerTouchEnd}
-        >
-            {size.width > 0 && size.height > 0 && children(size)}
-            <div
-                className="pointer-events-none absolute inset-0 rounded-md"
-                style={overlayStyle}
-            />
-            {enableResize && (
-                <div
-                    className="absolute bottom-1 right-1 h-3 w-3 cursor-ns-resize rounded-sm bg-muted-foreground/80 "
-                    onMouseDown={handleResizeStart}
-                    onTouchStart={handleTouchResizeStart}
-                />
-            )}
-        </div>
-    );
+    return {
+        containerRef,
+        size,
+        overlayStyle,
+        handleMouseMove,
+        handleMouseLeave,
+        handleContainerTouchMove,
+        handleContainerTouchEnd,
+        handleResizeStart,
+        handleTouchResizeStart,
+    };
 };
 
-export default SecureCanvasContainer;
+export default useSecureCanvasContainer;
+

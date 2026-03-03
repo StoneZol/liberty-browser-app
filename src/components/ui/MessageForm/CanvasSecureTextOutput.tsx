@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Stage, Layer, Rect, Text as KonvaText } from "react-konva";
-import SecureCanvasContainer from "./SecureCanvasContainer";
+import SecureCanvasContainer from "../SecureCanvasContainer";
 import { useTheme } from "@/hooks/useTheme";
 
 interface CanvasSecureTextOutputProps {

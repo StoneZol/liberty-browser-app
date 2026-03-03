@@ -4,6 +4,7 @@ import type { MessageFormProps } from "./MessageForm.types";
 import { useMessageForm } from "./MessageForm.hooks";
 import CanvasSecureTextInput from "./CanvasSecureTextInput";
 import CanvasSecureTextOutput from "./CanvasSecureTextOutput";
+import { Label } from "../label";
 
 const MessageForm = ({ contact }: MessageFormProps) => {
 
@@ -36,11 +37,13 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsList>
 
                 <TabsContent value="encrypt" className="flex flex-col gap-3">
+                    <Label>Message to encrypt</Label>
                     <CanvasSecureTextInput
                         value={plain}
                         onChange={setPlain}
                         placeholder="Plain message goes here…"
                     />
+                    <Label>Encrypted message</Label>
                     <CanvasSecureTextOutput value={cipher} />
                     <div className="flex justify-end gap-2">
                         <Button variant="destructive" size="sm" onClick={handleClearPlain}>
@@ -66,11 +69,13 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsContent>
 
                 <TabsContent value="decrypt" className="flex flex-col gap-3">
+                    <Label>Message to decrypt</Label>
                     <CanvasSecureTextInput
                         value={cipher}
                         onChange={setCipher}
                         placeholder="Paste encrypted message…"
                     />
+                    <Label>Decrypted message</Label>
                     <CanvasSecureTextOutput value={plain} />
                     <p className="text-xs text-muted-foreground">{error}</p>
                     <div className="flex justify-end gap-2">

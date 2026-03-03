@@ -11,7 +11,7 @@ function App() {
         <>
             <Header />
             <ScreenController />
-            <Toaster />
+            <Toaster position="top-right" duration={1000} />
         </>
     )
 }
