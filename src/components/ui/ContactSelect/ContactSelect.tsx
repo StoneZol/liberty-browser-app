@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Contact } from "@/lib/types";
 import { Button } from "../button";
 import { TemplatePopover } from "../popover";
@@ -18,21 +19,26 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
         reloadFromStore,
     } = useContactSelect();
 
+    const [open, setOpen] = useState(false);
+
     const selected =
         contacts.find((c) => c.id === value) ?? null;
 
     const handleSelect = (contact: Contact | null) => {
         onChange?.(contact);
+        setOpen(false);
     };
 
-    const handleOpenChange = (open: boolean) => {
-        if (open) {
+    const handleOpenChange = (nextOpen: boolean) => {
+        setOpen(nextOpen);
+        if (nextOpen) {
             reloadFromStore();
         }
     };
 
     return (
         <TemplatePopover
+            open={open}
             trigger={
                 <Button
                     type="button"

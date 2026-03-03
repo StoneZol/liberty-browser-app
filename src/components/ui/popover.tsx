@@ -82,12 +82,13 @@ function PopoverDescription({
 
 interface TemplatePopoverProps extends React.ComponentProps<typeof PopoverContent> {
     trigger: React.ReactNode
+    open?: boolean
     onOpenChange?: (open: boolean) => void
 }
 
-function TemplatePopover({ trigger, children, onOpenChange, ...contentProps }: TemplatePopoverProps) {
+function TemplatePopover({ trigger, children, open, onOpenChange, ...contentProps }: TemplatePopoverProps) {
     return (
-        <Popover onOpenChange={onOpenChange}>
+        <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>
                 {trigger}
             </PopoverTrigger>

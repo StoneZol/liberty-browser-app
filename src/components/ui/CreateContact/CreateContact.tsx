@@ -12,24 +12,13 @@ interface CreateContactProps {
 }
 
 const CreateContact = ({ onDone }: CreateContactProps) => {
-    const { form, onSubmit, handleNoiseLengthChange } = useCreateContactHook()
-    const seedPhrase = form.watch('seedPhrase')
-    const tag = form.watch('tag')
-    const noiseLength = form.watch('noiseLength')
-    const seedHash = libertyCore.crypto.hash(seedPhrase)
-    const config = `${tag}-${noiseLength}`
-    const configHash = libertyCore.crypto.hash(config)
+    const { form, onSubmit, handleNoiseLengthChange, handleIterationsChange, configObj } = useCreateContactHook()
     return (
-        <form className='flex flex-col gap-6 p-4'>
+        <form className='flex flex-col gap-6 p-2 md:p-4'>
             {/* Seed phrase section */}
             <section className='flex flex-col gap-3 rounded-lg border bg-card p-4'>
-                <div className='flex items-start justify-between gap-2'>
-                    <div className='space-y-1'>
-                        <p className='text-sm font-semibold'>Seed phrase</p>
-                        <p className='text-xs text-muted-foreground'>
-                            We never stash your raw seed, anon — only its hash. The funky fingerprint lets you see if you fat‑fingered it.
-                        </p>
-                    </div>
+                <Label htmlFor='seedPhrase' className='text-xs font-medium uppercase tracking-wide flex items-center justify-between'>
+                    <span>Seed Phrase</span>
                     <TemplatePopover
                         trigger={
                             <Button type='button' variant='outline' size='icon' className='h-7 w-7 text-xs'>
@@ -44,14 +33,10 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                                 It&apos;s the secret sentence all your keys are born from. We never save it as text, just a one‑way hash.
                             </p>
                             <p className='text-xs text-muted-foreground'>
-                                If the visual hash flips, you typed a different spell. Double‑check before you trust it.
+                                If the visual hash flips, u typed a different spell. Double‑check before u trust it.
                             </p>
                         </div>
                     </TemplatePopover>
-                </div>
-
-                <Label htmlFor='seedPhrase' className='text-xs font-medium uppercase tracking-wide'>
-                    Seed Phrase
                 </Label>
                 <Input {...form.register('seedPhrase')} type='password' id='seedPhrase' />
                 {form.formState.errors.seedPhrase && (
@@ -59,7 +44,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                 )}
 
                 <p className='mt-1 text-xs text-muted-foreground'>
-                    Hash: {libertyCore.crypto.fingerprint.visual(seedHash)}
+                    Hash: {libertyCore.crypto.fingerprint.visual(configObj.seedHash)}
                 </p>
             </section>
 
@@ -68,10 +53,8 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                 <div className='flex items-start justify-between gap-2'>
                     <div className='space-y-1'>
                         <p className='text-sm font-semibold'>Contact config</p>
-                        <p className='text-xs text-muted-foreground'>
-                            This config tells us how to wrap your encrypted message in extra noise so it looks nice and messy.
-                        </p>
                     </div>
+
                     <TemplatePopover
                         trigger={
                             <Button type='button' variant='outline' size='icon' className='h-7 w-7 text-xs'>
@@ -90,11 +73,11 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                                     <span className='font-medium'>Noise length</span> — how much pseudo‑random noise we sprinkle in (0–512).
                                 </li>
                                 <li>
-                                    <span className='font-medium'>Description</span> — free‑form notes for future‑you or your chumbas.
+                                    <span className='font-medium'>Description</span> — free‑form notes for future‑u or ur chumbas.
                                 </li>
                             </ul>
                             <p className='text-xs text-muted-foreground'>
-                                We hash this whole config so you can see if anything changed behind your back.
+                                We hash this whole config so u can see if anything changed behind ur back.
                             </p>
                         </div>
                     </TemplatePopover>
@@ -108,6 +91,21 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                         <Input {...form.register('tag')} type='password' id='tag' />
                         {form.formState.errors.tag && (
                             <p className='text-xs text-destructive'>{form.formState.errors.tag.message}</p>
+                        )}
+                    </div>
+                    <div className='flex flex-col gap-1'>
+                        <Label htmlFor='iterations' className='text-xs font-medium uppercase tracking-wide'>
+                            Iterations* (0–1000000)
+                        </Label>
+                        <Input
+                            {...form.register('iterations')}
+                            type='password'
+                            id='iterations'
+                            inputMode='numeric'
+                            onChange={handleIterationsChange}
+                        />
+                        {form.formState.errors.iterations && (
+                            <p className='text-xs text-destructive'>{form.formState.errors.iterations.message}</p>
                         )}
                     </div>
 
@@ -140,7 +138,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
 
                 <Separator />
                 <p className='text-xs text-muted-foreground'>
-                    Config hash: {libertyCore.crypto.fingerprint.visual(configHash)}
+                    Config hash: {libertyCore.crypto.fingerprint.visual(configObj.hash)}
                 </p>
             </section>
 

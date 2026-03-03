@@ -5,6 +5,7 @@ export const ContactSchema = z.object({
     hash: z.string(),
     seedHash: z.string(),
     tag: z.string(),
+    iterations: z.number(),
     noiseLength: z.number(),
     description: z.string(),
 })

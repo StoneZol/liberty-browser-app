@@ -10,10 +10,10 @@ const AuthForm = () => {
     return (
         <section className="flex flex-col gap-4 p-4">
             <h2 className="text-2xl font-bold">Welcome back Anon!</h2>
-            <form className="flex flex-col gap-4 bg-card p-4 rounded-lg">
+            <form className="flex flex-col gap-4 bg-card p-4 rounded-lg" onSubmit={form.handleSubmit(onSubmit)}>
                 <Label htmlFor="password">Password</Label>
                 <Input type="password" placeholder="Password" id="password" {...form.register('Password')} />
-                <Button type="button" onClick={form.handleSubmit(onSubmit)}>SignIn</Button>
+                <Button type="submit" onClick={form.handleSubmit(onSubmit)}>SignIn</Button>
 
                 <AlertDialogComponent
                     onContinue={handleResetData}

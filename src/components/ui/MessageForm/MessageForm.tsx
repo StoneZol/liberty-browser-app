@@ -1,48 +1,13 @@
-import { useState } from "react";
-import type { Contact } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 import { Button } from "../button";
-import { useLibertyCoreStore } from "@/hooks/useLibertyCore";
-
-interface MessageFormProps {
-    contact: Contact | null;
-}
+import type { MessageFormProps } from "./MessageForm.types";
+import { useMessageForm } from "./MessageForm.hooks";
 
 const MessageForm = ({ contact }: MessageFormProps) => {
-    const { encryptMessage, decryptMessage } = useLibertyCoreStore();
 
-    const [mode, setMode] = useState<"encrypt" | "decrypt">("encrypt");
-    const [plain, setPlain] = useState("");
-    const [cipher, setCipher] = useState("");
-    const [error, setError] = useState<string | null>(null);
 
-    const handleEncrypt = async () => {
-        if (!contact) {
-            setError("Pick a contact first, anon.");
-            return;
-        }
-        const res = await encryptMessage(contact, plain);
-        if (res.success) {
-            setCipher(res.result as string);
-            setError(null);
-        } else {
-            setError(res.message);
-        }
-    };
+    const { mode, plain, cipher, error, handleModeChange, handlePaste, handleEncrypt, handleDecrypt, setPlain, setCipher } = useMessageForm({ contact });
 
-    const handleDecrypt = async () => {
-        if (!contact) {
-            setError("Pick a contact first, anon.");
-            return;
-        }
-        const res = await decryptMessage(contact, cipher);
-        if (res.success) {
-            setPlain(res.result as string);
-            setError(null);
-        } else {
-            setError(res.message);
-        }
-    };
 
     return (
         <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
@@ -57,7 +22,7 @@ const MessageForm = ({ contact }: MessageFormProps) => {
 
             <Tabs
                 value={mode}
-                onValueChange={(v) => setMode(v as "encrypt" | "decrypt")}
+                onValueChange={handleModeChange}
                 className="mt-2"
             >
                 <TabsList className="mb-2" variant="line">
@@ -105,11 +70,18 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                         className="min-h-[120px] rounded-md border bg-muted px-3 py-2 text-sm"
                     />
                     {error && <p className="text-xs text-destructive">{error}</p>}
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
                         <Button
                             type="button"
                             size="sm"
-                            disabled={!cipher.trim() || !contact}
+                            onClick={handlePaste}
+                        >
+                            Paste
+                        </Button>
+                        <Button
+                            type="button"
+                            size="sm"
+                            disabled={!contact}
                             onClick={handleDecrypt}
                         >
                             Decrypt

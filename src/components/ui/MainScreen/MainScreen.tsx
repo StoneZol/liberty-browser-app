@@ -36,9 +36,9 @@ const MainScreen = () => {
                                 Create contact
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-sm">
-                            <DialogHeader>
-                                <DialogTitle>Create contact</DialogTitle>
+                        <DialogContent className="sm:max-w-sm p-2" aria-describedby={undefined}>
+                            <DialogHeader className='pt-4 pl-4'>
+                                <DialogTitle className='text-start'>Create contact</DialogTitle>
                             </DialogHeader>
                             <CreateContact onDone={() => setIsCreateOpen(false)} />
                         </DialogContent>
@@ -56,7 +56,7 @@ const MainScreen = () => {
                                 Edit contact
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-sm">
+                        <DialogContent className="sm:max-w-sm" aria-describedby={undefined}>
                             <DialogHeader>
                                 <DialogTitle>Edit contact</DialogTitle>
                             </DialogHeader>

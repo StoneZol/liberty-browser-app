@@ -18,6 +18,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
         onSubmit,
         onDelete,
         handleNoiseLengthChange,
+        handleIterationsChange,
         storedSeedHash,
         checkedSeedHash,
         storedConfigHash,
@@ -71,6 +72,23 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                     {form.formState.errors.tag && (
                         <p className="text-xs text-destructive">
                             {form.formState.errors.tag.message}
+                        </p>
+                    )}
+                </div>
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="edit-iterations" className="text-xs font-medium uppercase tracking-wide">
+                        Iterations* (0–1000000)
+                    </Label>
+                    <Input
+                        {...form.register("iterations")}
+                        type="password"
+                        id="edit-iterations"
+                        inputMode="numeric"
+                        onChange={handleIterationsChange}
+                    />
+                    {form.formState.errors.iterations && (
+                        <p className="text-xs text-destructive">
+                            {form.formState.errors.iterations.message}
                         </p>
                     )}
                 </div>

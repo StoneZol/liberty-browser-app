@@ -17,40 +17,43 @@ const useEditContactHook = (contact: Contact | null) => {
                 tag: contact.tag,
                 noiseLength: String(contact.noiseLength),
                 description: contact.description,
+                iterations: String(contact.iterations),
             }
             : {
                 seedPhrase: "",
                 tag: "",
                 noiseLength: "",
                 description: "",
+                iterations: "",
             },
     });
 
+    // eslint-disable-next-line react-hooks/incompatible-library
     const seedPhrase = form.watch("seedPhrase") ?? "";
     const tagWatch = form.watch("tag") ?? "";
     const noiseLengthWatch = form.watch("noiseLength") ?? "";
+    const iterationsWatch = form.watch("iterations") ?? "";
+    const descriptionWatch = form.watch("description") ?? "";
+
+    const seedHash = getHash(seedPhrase);
+    const config = `${tagWatch}-${noiseLengthWatch}-${iterationsWatch}`;
+    const hash = getHash(config);
 
     const onSubmit = () => {
         if (!contact) return;
         const storeData = getStoreData();
         const contacts = storeData.data.contacts;
 
-        const rawSeedPhrase = form.getValues("seedPhrase") ?? "";
-        const trimmedSeed = rawSeedPhrase.trim();
-        const tag = form.getValues("tag");
-        const noiseLengthStr = form.getValues("noiseLength");
-        const description = form.getValues("description");
 
         const currentSeedHash = contact.seedHash;
-        const shouldUpdateSeed = trimmedSeed.length >= 8;
+        const shouldUpdateSeed = seedPhrase.length >= 8;
         const nextSeedHash = shouldUpdateSeed
-            ? getHash(trimmedSeed)
+            ? seedHash
             : currentSeedHash;
 
-        const seedHash = nextSeedHash;
 
         // config hash: only tag + noiseLength
-        const config = `${tag}-${noiseLengthStr}`;
+        const config = `${tagWatch}-${noiseLengthWatch}-${iterationsWatch}`;
         const hash = getHash(config);
 
         const nextContacts = contacts.map((c) =>
@@ -58,10 +61,11 @@ const useEditContactHook = (contact: Contact | null) => {
                 ? {
                     ...c,
                     hash,
-                    seedHash,
-                    tag,
-                    noiseLength: parseInt(noiseLengthStr, 10),
-                    description,
+                    seedHash: nextSeedHash,
+                    tag: tagWatch,
+                    noiseLength: parseInt(noiseLengthWatch, 10),
+                    description: descriptionWatch,
+                    iterations: parseInt(iterationsWatch, 10),
                 }
                 : c
         );
@@ -93,37 +97,48 @@ const useEditContactHook = (contact: Contact | null) => {
         removeRef(contact.id);
     };
 
-    const handleNoiseLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        fieldName: keyof EditContactFormType,
+        limit: number,
+    ) => {
         const raw = e.target.value;
         const digitsOnly = raw.replace(/\D/g, "");
 
         if (digitsOnly === "") {
             e.target.value = "";
-            form.setValue("noiseLength", "", { shouldValidate: true });
+            form.setValue(fieldName, "" as never, { shouldValidate: true });
             return;
         }
 
         let numeric = parseInt(digitsOnly, 10);
-        if (numeric > 512) numeric = 512;
+        if (numeric > limit) numeric = limit;
 
         const next = String(numeric);
         e.target.value = next;
-        form.setValue("noiseLength", next, { shouldValidate: true });
+        form.setValue(fieldName, next as never, { shouldValidate: true });
+    };
+
+    const handleNoiseLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleChange(e, "noiseLength", 512);
+    };
+
+    const handleIterationsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleChange(e, "iterations", 1_000_000);
     };
 
     const storedSeedHash = contact?.seedHash ?? "";
-    const trimmedWatchedSeed = seedPhrase.trim();
-    const checkedSeedHash = trimmedWatchedSeed.length >= 8
-        ? getHash(trimmedWatchedSeed)
+    const checkedSeedHash = seedPhrase.length >= 8
+        ? getHash(seedPhrase)
         : "";
 
     // visual "stored" config hash: упрощённый, считается из исходных значений, которые мы отрисовали в форме
     const storedConfigHash = contact
-        ? getHash(`${contact.tag}-${String(contact.noiseLength)}`)
+        ? getHash(`${contact.tag}-${String(contact.noiseLength)}-${String(contact.iterations)}`)
         : "";
 
     // visual "current" config hash: упрощённый, считается из текущих значений в форме
-    const previewConfig = `${tagWatch}-${noiseLengthWatch}`;
+    const previewConfig = `${tagWatch}-${noiseLengthWatch}-${iterationsWatch}`;
     const previewConfigHash = getHash(previewConfig);
 
     return {
@@ -131,6 +146,16 @@ const useEditContactHook = (contact: Contact | null) => {
         onSubmit,
         onDelete,
         handleNoiseLengthChange,
+        handleIterationsChange,
+        configObj: {
+            seedHash,
+            config,
+            hash,
+            tag: tagWatch,
+            noiseLength: parseInt(noiseLengthWatch, 10),
+            iterations: parseInt(iterationsWatch, 10),
+            description: descriptionWatch,
+        },
         storedSeedHash,
         checkedSeedHash,
         storedConfigHash,

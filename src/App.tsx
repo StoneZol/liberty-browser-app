@@ -3,6 +3,7 @@
 import './App.css'
 import { Header } from './components/ui/Header'
 import ScreenController from './components/ui/ScreenController/ScreenController'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
 
@@ -10,6 +11,7 @@ function App() {
         <>
             <Header />
             <ScreenController />
+            <Toaster />
         </>
     )
 }

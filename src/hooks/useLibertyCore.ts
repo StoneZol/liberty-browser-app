@@ -28,8 +28,8 @@ export const useLibertyCoreStore = () => {
         ls.removeData('LibertyStore')
     }
 
-    const getHash = (str: string) => {
-        return libertyCore.crypto.hash(str)
+    const getHash = (str: string, iterations: number = 1) => {
+        return libertyCore.crypto.hash(str, iterations)
     }
 
 
@@ -39,7 +39,7 @@ export const useLibertyCoreStore = () => {
             {
                 message,
                 clanPoint: contact.tag,
-                key: contact.seedHash,
+                key: getHash(contact.seedHash, contact.iterations),
                 noiseLength: contact.noiseLength,
             },
         )
@@ -50,7 +50,7 @@ export const useLibertyCoreStore = () => {
             libertyCore.message.decrypt,
             {
                 message: cryptoMessage,
-                key: contact.seedHash,
+                key: getHash(contact.seedHash, contact.iterations),
                 noiseLength: contact.noiseLength,
             },
         )
