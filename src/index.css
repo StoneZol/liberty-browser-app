@@ -131,3 +131,7 @@ button{
     animation: none;
     mix-blend-mode: normal;
 }
+
+canvas {
+    touch-action: none;
+  }

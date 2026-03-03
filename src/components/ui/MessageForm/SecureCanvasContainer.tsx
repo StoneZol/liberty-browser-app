@@ -47,16 +47,43 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
         setSpot(null);
     };
 
+    const handleContainerTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+        if (event.touches.length === 0) return;
+
+        // блокируем нативный скролл страницы, пока пользователь «ведёт» по канвасу
+        event.preventDefault();
+
+        const rect = event.currentTarget.getBoundingClientRect();
+        const touch = event.touches[0];
+        setSpot({
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top,
+        });
+    };
+
+    const handleContainerTouchEnd = () => {
+        setSpot(null);
+    };
+
     const handleResizeStart = (event: React.MouseEvent<HTMLDivElement>) => {
         if (!enableResize) return;
         event.preventDefault();
-        const startY = event.clientY;
-        const startHeight = size.height || minHeight;
 
         const handleMouseMove = (moveEvent: MouseEvent) => {
-            const delta = moveEvent.clientY - startY;
-            const nextHeight = Math.max(minHeight, startHeight + delta);
+            const rect = containerRef.current?.getBoundingClientRect();
+            if (!rect) return;
+
+            const currentY = moveEvent.clientY;
+            const nextHeight = Math.max(minHeight, currentY - rect.top);
             setSize((prev) => ({ ...prev, height: nextHeight }));
+
+            // если низ контейнера уходит за границу вьюпорта — докручиваем страницу вниз
+            const bottom = rect.top + nextHeight;
+            const viewportHeight = window.innerHeight;
+            if (bottom > viewportHeight) {
+                const scrollDelta = bottom - viewportHeight;
+                window.scrollBy({ top: scrollDelta, behavior: "auto" });
+            }
         };
 
         const handleMouseUp = () => {
@@ -65,6 +92,43 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
 
         window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("mouseup", handleMouseUp, { once: true });
+    };
+
+    const handleTouchResizeStart = (event: React.TouchEvent<HTMLDivElement>) => {
+        if (!enableResize) return;
+        if (event.touches.length === 0) return;
+
+        event.preventDefault();
+
+        const handleTouchMove = (moveEvent: TouchEvent) => {
+            if (moveEvent.touches.length === 0) return;
+
+            // не даём браузеру воспринимать этот жест как скролл
+            moveEvent.preventDefault();
+
+            const rect = containerRef.current?.getBoundingClientRect();
+            if (!rect) return;
+
+            const currentY = moveEvent.touches[0].clientY;
+            const nextHeight = Math.max(minHeight, currentY - rect.top);
+            setSize((prev) => ({ ...prev, height: nextHeight }));
+
+            // автоскролл вниз, если низ контейнера вышел за вьюпорт
+            const bottom = rect.top + nextHeight;
+            const viewportHeight = window.innerHeight;
+            if (bottom > viewportHeight) {
+                const scrollDelta = bottom - viewportHeight;
+                window.scrollBy({ top: scrollDelta, behavior: "auto" });
+            }
+        };
+
+        const handleTouchEnd = () => {
+            window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("touchend", handleTouchEnd);
+        };
+
+        window.addEventListener("touchmove", handleTouchMove);
+        window.addEventListener("touchend", handleTouchEnd);
     };
 
     const overlayStyle: React.CSSProperties = spot
@@ -83,10 +147,13 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
                 "relative w-full rounded-lg bg-muted overflow-hidden outline",
                 className
             )}
-            style={{ height: size.height || minHeight, minHeight }}
+            style={{ height: size.height || minHeight, minHeight, touchAction: "none" }}
             onKeyDown={onKeyDown}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchMove={handleContainerTouchMove}
+            onTouchEnd={handleContainerTouchEnd}
+            onTouchCancel={handleContainerTouchEnd}
         >
             {size.width > 0 && size.height > 0 && children(size)}
             <div
@@ -97,6 +164,7 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
                 <div
                     className="absolute bottom-1 right-1 h-3 w-3 cursor-ns-resize rounded-sm bg-muted-foreground/80 "
                     onMouseDown={handleResizeStart}
+                    onTouchStart={handleTouchResizeStart}
                 />
             )}
         </div>

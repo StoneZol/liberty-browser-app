@@ -21,9 +21,6 @@ const MainScreen = () => {
 
             <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
-                    <p className="text-xs text-muted-foreground">
-                        Pick which contact config you want to use right now.
-                    </p>
                     <ContactSelect
                         value={selectedContact?.id ?? null}
                         onChange={setSelectedContact}
