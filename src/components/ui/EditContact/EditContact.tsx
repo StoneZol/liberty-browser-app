@@ -1,11 +1,13 @@
 import { useState } from "react";
 import type { Contact } from "@/lib/types";
 import useEditContactHook from "./EditContact.hooks";
-import { Input } from "../input";
 import { Label } from "../label";
 import { Button } from "../button";
 import { AlertDialogComponent } from "../alert-dialog";
 import { libertyCore } from "liberty-core";
+import { Separator } from "../separator";
+import { TemplatePopover } from "../popover";
+import CanvasSecureTextInput from "../CanvasSecureTextInput";
 
 interface EditContactProps {
     contact: Contact | null;
@@ -36,15 +38,37 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
     }
 
     return (
-        <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-                <Label htmlFor="edit-seedPhrase" className="text-xs font-medium uppercase tracking-wide">
-                    Seed phrase (optional)
+        <form className="flex flex-col gap-6 p-2 md:p-4">
+            {/* Seed phrase section */}
+            <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
+                <Label
+                    htmlFor="edit-seedPhrase"
+                    className="text-xs font-medium uppercase tracking-wide flex items-center justify-between"
+                >
+                    <span>Seed Phrase (optional)</span>
+                    <TemplatePopover
+                        trigger={
+                            <Button type="button" variant="outline" size="icon" className="h-7 w-7 text-xs">
+                                ?
+                            </Button>
+                        }
+                        sideOffset={8}
+                    >
+                        <div className="space-y-2 text-sm">
+                            <p className="font-medium">Seed phrase for this contact</p>
+                            <p className="text-muted-foreground">
+                                Leave it empty to keep the existing seed; fill it to rotate the seed hash.
+                                We never store the phrase as text, only a one‑way hash.
+                            </p>
+                        </div>
+                    </TemplatePopover>
                 </Label>
-                <Input
-                    {...form.register("seedPhrase")}
-                    type="password"
-                    id="edit-seedPhrase"
+                <CanvasSecureTextInput
+                    minHeight={40}
+                    value={form.watch("seedPhrase") ?? ""}
+                    onChange={(value) => form.setValue("seedPhrase", value, { shouldValidate: true })}
+                    mask={true}
+                    enableOverlay={false}
                 />
                 {form.formState.errors.seedPhrase && (
                     <p className="text-xs text-destructive">
@@ -61,87 +85,112 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                         {libertyCore.crypto.fingerprint.visual(checkedSeedHash)}
                     </p>
                 )}
-            </div>
+            </section>
 
-            <div className="grid gap-3 md:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="edit-tag" className="text-xs font-medium uppercase tracking-wide">
-                        Tag*
-                    </Label>
-                    <Input {...form.register("tag")} type="password" id="edit-tag" />
-                    {form.formState.errors.tag && (
-                        <p className="text-xs text-destructive">
-                            {form.formState.errors.tag.message}
-                        </p>
-                    )}
-                </div>
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="edit-iterations" className="text-xs font-medium uppercase tracking-wide">
-                        Iterations* (0–1000000)
-                    </Label>
-                    <Input
-                        {...form.register("iterations")}
-                        type="password"
-                        id="edit-iterations"
-                        inputMode="numeric"
-                        onChange={handleIterationsChange}
-                    />
-                    {form.formState.errors.iterations && (
-                        <p className="text-xs text-destructive">
-                            {form.formState.errors.iterations.message}
-                        </p>
-                    )}
+            {/* Config section */}
+            <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="space-y-1">
+                        <p className="text-sm font-semibold">Contact config</p>
+                    </div>
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3">
+                        <Label htmlFor="edit-tag" className="text-xs font-medium uppercase tracking-wide">
+                            Tag*
+                        </Label>
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch("tag") ?? ""}
+                            onChange={(value) => form.setValue("tag", value, { shouldValidate: true })}
+                            mask={true}
+                            enableOverlay={false}
+                        />
+                        {form.formState.errors.tag && (
+                            <p className="text-xs text-destructive">
+                                {form.formState.errors.tag.message}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <Label
+                            htmlFor="edit-iterations"
+                            className="text-xs font-medium uppercase tracking-wide"
+                        >
+                            Iterations* (0–1000000)
+                        </Label>
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch("iterations") ?? ""}
+                            onChange={handleIterationsChange}
+                            mask={true}
+                            enableOverlay={false}
+                        />
+                        {form.formState.errors.iterations && (
+                            <p className="text-xs text-destructive">
+                                {form.formState.errors.iterations.message}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                        <Label
+                            htmlFor="edit-noiseLength"
+                            className="text-xs font-medium uppercase tracking-wide"
+                        >
+                            Noise Length* (0–512)
+                        </Label>
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch("noiseLength") ?? ""}
+                            onChange={handleNoiseLengthChange}
+                            mask={true}
+                            enableOverlay={false}
+                        />
+                        {form.formState.errors.noiseLength && (
+                            <p className="text-xs text-destructive">
+                                {form.formState.errors.noiseLength.message}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
                     <Label
-                        htmlFor="edit-noiseLength"
+                        htmlFor="edit-description"
                         className="text-xs font-medium uppercase tracking-wide"
                     >
-                        Noise Length* (0–512)
+                        Description
                     </Label>
-                    <Input
-                        {...form.register("noiseLength")}
-                        type="password"
-                        id="edit-noiseLength"
-                        inputMode="numeric"
-                        onChange={handleNoiseLengthChange}
+                    <CanvasSecureTextInput
+                        minHeight={40}
+                        value={form.watch("description") ?? ""}
+                        onChange={(value) => form.setValue("description", value, { shouldValidate: true })}
+                        mask={true}
+                        enableOverlay={false}
                     />
-                    {form.formState.errors.noiseLength && (
+                    {form.formState.errors.description && (
                         <p className="text-xs text-destructive">
-                            {form.formState.errors.noiseLength.message}
+                            {form.formState.errors.description.message}
                         </p>
                     )}
                 </div>
-            </div>
 
-            <div className="flex flex-col gap-1">
-                <Label
-                    htmlFor="edit-description"
-                    className="text-xs font-medium uppercase tracking-wide"
-                >
-                    Description
-                </Label>
-                <Input {...form.register("description")} type="password" id="edit-description" />
-                {form.formState.errors.description && (
-                    <p className="text-xs text-destructive">
-                        {form.formState.errors.description.message}
+                <Separator />
+                <div className="flex flex-col gap-1 text-xs text-muted-foreground pt-1">
+                    <p>
+                        Stored config hash:{" "}
+                        {libertyCore.crypto.fingerprint.visual(storedConfigHash)}
                     </p>
-                )}
-            </div>
-
-            <div className="flex flex-col gap-1 text-xs text-muted-foreground pt-1">
-                <p>
-                    Stored config hash:{" "}
-                    {libertyCore.crypto.fingerprint.visual(storedConfigHash)}
-                </p>
-                {
-                    storedConfigHash !== previewConfigHash && <p>
-                        Current config hash:{" "}
-                        {libertyCore.crypto.fingerprint.visual(previewConfigHash)}
-                    </p>
-                }
-            </div>
+                    {storedConfigHash !== previewConfigHash && (
+                        <p>
+                            Current config hash:{" "}
+                            {libertyCore.crypto.fingerprint.visual(previewConfigHash)}
+                        </p>
+                    )}
+                </div>
+            </section>
 
             <div className="flex justify-between gap-2 pt-2">
                 <AlertDialogComponent

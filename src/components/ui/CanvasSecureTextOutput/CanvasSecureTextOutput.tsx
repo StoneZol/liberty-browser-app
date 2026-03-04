@@ -4,14 +4,15 @@ import SecureCanvasContainer from "../SecureCanvasContainer";
 import { useTheme } from "@/hooks/useTheme";
 
 interface CanvasSecureTextOutputProps {
+    id?: string;
     value: string;
     className?: string;
 }
 
-const CanvasSecureTextOutput: React.FC<CanvasSecureTextOutputProps> = ({ value, className }) => {
+const CanvasSecureTextOutput: React.FC<CanvasSecureTextOutputProps> = ({ id, value, className }) => {
     const isDark = useTheme();
     return (
-        <SecureCanvasContainer className={className}>
+        <SecureCanvasContainer id={id || undefined} className={className}>
             {(size) => (
                 <Stage width={size.width} height={size.height}>
                     <Layer>

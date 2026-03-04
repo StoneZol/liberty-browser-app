@@ -2,8 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 import { Button } from "../button";
 import type { MessageFormProps } from "./MessageForm.types";
 import { useMessageForm } from "./MessageForm.hooks";
-import CanvasSecureTextInput from "./CanvasSecureTextInput";
-import CanvasSecureTextOutput from "./CanvasSecureTextOutput";
+import CanvasSecureTextInput from "../CanvasSecureTextInput";
+import CanvasSecureTextOutput from "../CanvasSecureTextOutput/CanvasSecureTextOutput";
 import { Label } from "../label";
 
 const MessageForm = ({ contact }: MessageFormProps) => {
@@ -37,14 +37,15 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsList>
 
                 <TabsContent value="encrypt" className="flex flex-col gap-3">
-                    <Label>Message to encrypt</Label>
+                    <Label htmlFor="plain">Message to encrypt</Label>
                     <CanvasSecureTextInput
+                        id="plain"
                         value={plain}
                         onChange={setPlain}
                         placeholder="Plain message goes here…"
                     />
-                    <Label>Encrypted message</Label>
-                    <CanvasSecureTextOutput value={cipher} />
+                    <Label htmlFor="cipher">Encrypted message</Label>
+                    <CanvasSecureTextOutput id="cipher" value={cipher} />
                     <div className="flex justify-end gap-2">
                         <Button variant="destructive" size="sm" onClick={handleClearPlain}>
                             Clear
@@ -69,14 +70,15 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                 </TabsContent>
 
                 <TabsContent value="decrypt" className="flex flex-col gap-3">
-                    <Label>Message to decrypt</Label>
+                    <Label htmlFor="cipher">Message to decrypt</Label>
                     <CanvasSecureTextInput
+                        id="cipher"
                         value={cipher}
                         onChange={setCipher}
                         placeholder="Paste encrypted message…"
                     />
-                    <Label>Decrypted message</Label>
-                    <CanvasSecureTextOutput value={plain} />
+                    <Label htmlFor="plain">Decrypted message</Label>
+                    <CanvasSecureTextOutput id="plain" value={plain} />
                     <p className="text-xs text-muted-foreground">{error}</p>
                     <div className="flex justify-end gap-2">
                         <Button variant="destructive" size="sm" onClick={handleClearCipher}>

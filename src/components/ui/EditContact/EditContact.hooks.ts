@@ -97,16 +97,14 @@ const useEditContactHook = (contact: Contact | null) => {
         removeRef(contact.id);
     };
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
+    const setNumericFieldFromCanvas = (
+        raw: string,
         fieldName: keyof EditContactFormType,
         limit: number,
     ) => {
-        const raw = e.target.value;
         const digitsOnly = raw.replace(/\D/g, "");
 
         if (digitsOnly === "") {
-            e.target.value = "";
             form.setValue(fieldName, "" as never, { shouldValidate: true });
             return;
         }
@@ -115,16 +113,15 @@ const useEditContactHook = (contact: Contact | null) => {
         if (numeric > limit) numeric = limit;
 
         const next = String(numeric);
-        e.target.value = next;
         form.setValue(fieldName, next as never, { shouldValidate: true });
     };
 
-    const handleNoiseLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleChange(e, "noiseLength", 512);
+    const handleNoiseLengthChange = (raw: string) => {
+        setNumericFieldFromCanvas(raw, "noiseLength", 512);
     };
 
-    const handleIterationsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleChange(e, "iterations", 1_000_000);
+    const handleIterationsChange = (raw: string) => {
+        setNumericFieldFromCanvas(raw, "iterations", 1_000_000);
     };
 
     const storedSeedHash = contact?.seedHash ?? "";

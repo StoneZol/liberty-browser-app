@@ -1,8 +1,9 @@
 import { Button } from "../button";
-import { Input } from "../input";
+// import { Input } from "../input";
 import { Label } from "../label";
 import useAuthFormHook from "./AuthForm.hooks";
 import { AlertDialogComponent } from './../alert-dialog';
+import CanvasSecureTextInput from "../CanvasSecureTextInput";
 
 
 const AuthForm = () => {
@@ -12,7 +13,14 @@ const AuthForm = () => {
             <h2 className="text-2xl font-bold">Welcome back Anon!</h2>
             <form className="flex flex-col gap-4 bg-card p-4 rounded-lg" onSubmit={form.handleSubmit(onSubmit)}>
                 <Label htmlFor="password">Password</Label>
-                <Input type="password" placeholder="Password" id="password" {...form.register('Password')} />
+                <CanvasSecureTextInput
+                    minHeight={40}
+                    id="password"
+                    value={form.watch('Password')}
+                    enableOverlay={false}
+                    onChange={(value) => form.setValue('Password', value, { shouldValidate: true })}
+                    mask
+                />
                 <Button type="submit" onClick={form.handleSubmit(onSubmit)}>SignIn</Button>
 
                 <AlertDialogComponent

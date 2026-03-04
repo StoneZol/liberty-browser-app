@@ -31,13 +31,46 @@ const useSecureCanvasContainer = ({
     const isDark = useTheme();
 
     React.useLayoutEffect(() => {
-        if (containerRef.current) {
-            const rect = containerRef.current.getBoundingClientRect();
+        const node = containerRef.current;
+        if (!node) return;
+
+        const updateSize = () => {
+            const width = node.clientWidth;
             setSize((prev) => ({
-                width: rect.width,
+                width,
                 height: prev.height ?? minHeight,
             }));
+        };
+        updateSize();
+
+        const rafId =
+            typeof window !== "undefined"
+                ? window.requestAnimationFrame(() => {
+                    updateSize();
+                })
+                : 0;
+
+        if (typeof ResizeObserver !== "undefined") {
+            const observer = new ResizeObserver(() => {
+                updateSize();
+            });
+            observer.observe(node);
+
+            return () => {
+                observer.disconnect();
+                if (rafId) {
+                    window.cancelAnimationFrame(rafId);
+                }
+            };
         }
+
+        window.addEventListener("resize", updateSize);
+        return () => {
+            window.removeEventListener("resize", updateSize);
+            if (rafId) {
+                window.cancelAnimationFrame(rafId);
+            }
+        };
     }, [minHeight]);
 
     const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -55,7 +88,6 @@ const useSecureCanvasContainer = ({
     const handleContainerTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
         if (event.touches.length === 0) return;
 
-        // блокируем нативный скролл страницы, пока пользователь «ведёт» по канвасу
         event.preventDefault();
 
         const rect = event.currentTarget.getBoundingClientRect();
@@ -82,7 +114,6 @@ const useSecureCanvasContainer = ({
             const nextHeight = Math.max(minHeight, currentY - rect.top);
             setSize((prev) => ({ ...prev, height: nextHeight }));
 
-            // если низ контейнера уходит за границу вьюпорта — докручиваем страницу вниз
             const bottom = rect.top + nextHeight;
             const viewportHeight = window.innerHeight;
             if (bottom > viewportHeight) {
@@ -108,7 +139,6 @@ const useSecureCanvasContainer = ({
         const handleTouchMoveInner = (moveEvent: TouchEvent) => {
             if (moveEvent.touches.length === 0) return;
 
-            // не даём браузеру воспринимать этот жест как скролл
             moveEvent.preventDefault();
 
             const rect = containerRef.current?.getBoundingClientRect();
@@ -118,7 +148,6 @@ const useSecureCanvasContainer = ({
             const nextHeight = Math.max(minHeight, currentY - rect.top);
             setSize((prev) => ({ ...prev, height: nextHeight }));
 
-            // автоскролл вниз, если низ контейнера вышел за вьюпорт
             const bottom = rect.top + nextHeight;
             const viewportHeight = window.innerHeight;
             if (bottom > viewportHeight) {

@@ -1,16 +1,20 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import type { SecureCanvasContainerProps } from "./SecureCanvasContainer.types";
-import useSecureCanvasContainer from "./SecureCanvasContainer.logic";
+import useSecureCanvasContainer from "./SecureCanvasContainer.hooks";
 
 const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
+    id,
     children,
     className,
     minHeight = 120,
     radius = 40,
     enableResize = true,
+    showOverlay = true,
     tabIndex,
     onKeyDown,
+    onFocus,
+    onBlur,
 }) => {
     const {
         containerRef,
@@ -30,25 +34,30 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
 
     return (
         <div
+            id={id || undefined}
             ref={containerRef}
             tabIndex={tabIndex}
             className={cn(
-                "relative w-full rounded-lg bg-muted overflow-hidden outline",
+                "relative w-full rounded-lg bg-muted overflow-hidden",
                 className
             )}
             style={{ height: size.height || minHeight, minHeight, touchAction: "none" }}
             onKeyDown={onKeyDown}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onTouchMove={handleContainerTouchMove}
-            onTouchEnd={handleContainerTouchEnd}
-            onTouchCancel={handleContainerTouchEnd}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            onMouseMove={showOverlay ? handleMouseMove : undefined}
+            onMouseLeave={showOverlay ? handleMouseLeave : undefined}
+            onTouchMove={showOverlay ? handleContainerTouchMove : undefined}
+            onTouchEnd={showOverlay ? handleContainerTouchEnd : undefined}
+            onTouchCancel={showOverlay ? handleContainerTouchEnd : undefined}
         >
             {size.width > 0 && size.height > 0 && children(size)}
-            <div
-                className="pointer-events-none absolute inset-0 rounded-md"
-                style={overlayStyle}
-            />
+            {showOverlay && (
+                <div
+                    className="pointer-events-none absolute inset-0 rounded-md"
+                    style={overlayStyle}
+                />
+            )}
             {enableResize && (
                 <div
                     className="absolute bottom-1 right-1 h-3 w-3 cursor-ns-resize rounded-sm bg-muted-foreground/80 "

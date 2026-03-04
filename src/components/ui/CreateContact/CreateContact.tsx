@@ -1,11 +1,11 @@
 
-import { Input } from '../input';
 import { Button } from '../button';
 import { Label } from '../label';
 import { libertyCore } from 'liberty-core';
 import useCreateContactHook from './CreateContact.hooks';
 import { Separator } from '../separator';
 import { TemplatePopover } from '../popover';
+import CanvasSecureTextInput from '../CanvasSecureTextInput';
 
 interface CreateContactProps {
     onDone?: () => void;
@@ -30,7 +30,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                         <div className='space-y-2 text-sm'>
                             <p className='font-medium'>What is a seed phrase, anon?</p>
                             <p className='text-muted-foreground'>
-                                It&apos;s the secret sentence all your keys are born from. We never save it as text, just a one‑way hash.
+                                It&apos;s the secret sentence all ur keys are born from. We never save it as text, just a one‑way hash.
                             </p>
                             <p className='text-xs text-muted-foreground'>
                                 If the visual hash flips, u typed a different spell. Double‑check before u trust it.
@@ -38,7 +38,13 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                         </div>
                     </TemplatePopover>
                 </Label>
-                <Input {...form.register('seedPhrase')} type='password' id='seedPhrase' />
+                <CanvasSecureTextInput
+                    minHeight={40}
+                    value={form.watch('seedPhrase')}
+                    onChange={(value) => form.setValue('seedPhrase', value, { shouldValidate: true })}
+                    mask={true}
+                    enableOverlay={false}
+                />
                 {form.formState.errors.seedPhrase && (
                     <p className='text-xs text-destructive'>{form.formState.errors.seedPhrase.message}</p>
                 )}
@@ -83,42 +89,48 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                     </TemplatePopover>
                 </div>
 
-                <div className='grid gap-3 md:grid-cols-2'>
-                    <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-3'>
+                    <div className='flex flex-col gap-3'>
                         <Label htmlFor='tag' className='text-xs font-medium uppercase tracking-wide'>
                             Tag*
                         </Label>
-                        <Input {...form.register('tag')} type='password' id='tag' />
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch('tag')}
+                            onChange={(value) => form.setValue('tag', value, { shouldValidate: true })}
+                            mask={true}
+                            enableOverlay={false}
+                        />
                         {form.formState.errors.tag && (
                             <p className='text-xs text-destructive'>{form.formState.errors.tag.message}</p>
                         )}
                     </div>
-                    <div className='flex flex-col gap-1'>
+                    <div className='flex flex-col gap-3'>
                         <Label htmlFor='iterations' className='text-xs font-medium uppercase tracking-wide'>
                             Iterations* (0–1000000)
                         </Label>
-                        <Input
-                            {...form.register('iterations')}
-                            type='password'
-                            id='iterations'
-                            inputMode='numeric'
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch('iterations')}
                             onChange={handleIterationsChange}
+                            mask={true}
+                            enableOverlay={false}
                         />
                         {form.formState.errors.iterations && (
                             <p className='text-xs text-destructive'>{form.formState.errors.iterations.message}</p>
                         )}
                     </div>
 
-                    <div className='flex flex-col gap-1'>
+                    <div className='flex flex-col gap-3'>
                         <Label htmlFor='noiseLength' className='text-xs font-medium uppercase tracking-wide'>
                             Noise Length* (0–512)
                         </Label>
-                        <Input
-                            {...form.register('noiseLength')}
-                            type='password'
-                            id='noiseLength'
-                            inputMode='numeric'
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            value={form.watch('noiseLength')}
                             onChange={handleNoiseLengthChange}
+                            mask={true}
+                            enableOverlay={false}
                         />
                         {form.formState.errors.noiseLength && (
                             <p className='text-xs text-destructive'>{form.formState.errors.noiseLength.message}</p>
@@ -126,11 +138,18 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                     </div>
                 </div>
 
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-3'>
                     <Label htmlFor='description' className='text-xs font-medium uppercase tracking-wide'>
                         Description
                     </Label>
-                    <Input {...form.register('description')} type='password' id='description' />
+                    {/* <Input {...form.register('description')} type='password' id='description' /> */}
+                    <CanvasSecureTextInput
+                        minHeight={40}
+                        value={form.watch('description')}
+                        onChange={(value) => form.setValue('description', value, { shouldValidate: true })}
+                        mask={true}
+                        enableOverlay={false}
+                    />
                     {form.formState.errors.description && (
                         <p className='text-xs text-destructive'>{form.formState.errors.description.message}</p>
                     )}

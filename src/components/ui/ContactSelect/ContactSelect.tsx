@@ -2,9 +2,9 @@ import { useState } from "react";
 import type { Contact } from "@/lib/types";
 import { Button } from "../button";
 import { TemplatePopover } from "../popover";
-import { Input } from "../input";
 import useContactSelect from "./ContactSelect.hooks";
 import CanvasContactLabel from "./CanvasContactLabel";
+import CanvasSecureTextInput from "../CanvasSecureTextInput";
 
 interface ContactSelectProps {
     value?: string | null;
@@ -66,11 +66,12 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
             onOpenChange={handleOpenChange}
         >
             <div className="flex flex-col gap-2 max-h-64 overflow-y-auto p-2">
-                <Input
-                    placeholder="Search by tag or description…"
-                    className="h-8 text-xs"
+                <CanvasSecureTextInput
+                    minHeight={40}
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(value) => setQuery(value)}
+                    mask={false}
+                    enableOverlay={false}
                 />
                 {visibleContacts.length === 0 ? (
                     <p className="text-xs text-muted-foreground">
@@ -84,7 +85,7 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                             <button
                                 key={contact.id}
                                 type="button"
-                                className={`flex flex-col items-start gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground ${isActive ? "bg-accent text-accent-foreground" : ""
+                                className={`flex flex-col items-start gap-0.5 rounded-md px-2 py-0.5 text-left text-sm hover:bg-accent hover:text-accent-foreground ${isActive ? "bg-accent text-accent-foreground" : ""
                                     }`}
                                 onClick={() => handleSelect(contact)}
                             >
