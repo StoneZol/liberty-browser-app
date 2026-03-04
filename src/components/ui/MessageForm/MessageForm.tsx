@@ -36,71 +36,75 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                     <TabsTrigger value="decrypt">Decrypt</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="encrypt" className="flex flex-col gap-3">
-                    <Label htmlFor="plain">Message to encrypt</Label>
-                    <CanvasSecureTextInput
-                        id="plain"
-                        value={plain}
-                        onChange={setPlain}
-                        placeholder="Plain message goes here…"
-                    />
-                    <Label htmlFor="cipher">Encrypted message</Label>
-                    <CanvasSecureTextOutput id="cipher" value={cipher} />
-                    <div className="flex justify-end gap-2">
-                        <Button variant="destructive" size="sm" onClick={handleClearPlain}>
-                            Clear
-                        </Button>
-                        <Button
-                            variant="outline"
-                            type="button"
-                            size="sm"
-                            onClick={handlePaste}
-                        >
-                            Paste
-                        </Button>
-                        <Button
-                            type="button"
-                            size="sm"
-                            disabled={!plain.trim() || !contact}
-                            onClick={handleEncrypt}
-                        >
-                            Encrypt
-                        </Button>
-                    </div>
+                <TabsContent value="encrypt" className="flex flex-col gap-3" asChild>
+                    <form>
+                        <Label htmlFor="plain">Message to encrypt</Label>
+                        <CanvasSecureTextInput
+                            id="plain"
+                            value={plain}
+                            onChange={setPlain}
+                            placeholder="Plain message goes here…"
+                        />
+                        <Label htmlFor="cipher">Encrypted message</Label>
+                        <CanvasSecureTextOutput id="cipher" value={cipher} />
+                        <div className="flex justify-end gap-2">
+                            <Button variant="destructive" size="sm" onClick={handleClearPlain}>
+                                Clear
+                            </Button>
+                            <Button
+                                variant="outline"
+                                type="button"
+                                size="sm"
+                                onClick={handlePaste}
+                            >
+                                Paste
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                disabled={!plain.trim() || !contact}
+                                onClick={handleEncrypt}
+                            >
+                                Encrypt
+                            </Button>
+                        </div>
+                    </form>
                 </TabsContent>
 
-                <TabsContent value="decrypt" className="flex flex-col gap-3">
-                    <Label htmlFor="cipher">Message to decrypt</Label>
-                    <CanvasSecureTextInput
-                        id="cipher"
-                        value={cipher}
-                        onChange={setCipher}
-                        placeholder="Paste encrypted message…"
-                    />
-                    <Label htmlFor="plain">Decrypted message</Label>
-                    <CanvasSecureTextOutput id="plain" value={plain} />
-                    <p className="text-xs text-muted-foreground">{error}</p>
-                    <div className="flex justify-end gap-2">
-                        <Button variant="destructive" size="sm" onClick={handleClearCipher}>
-                            Clear
-                        </Button>
-                        <Button
-                            variant="outline"
-                            type="button"
-                            size="sm"
-                            onClick={handlePaste}
-                        >
-                            Paste
-                        </Button>
-                        <Button
-                            type="button"
-                            size="sm"
-                            disabled={!contact}
-                            onClick={handleDecrypt}
-                        >
-                            Decrypt
-                        </Button>
-                    </div>
+                <TabsContent value="decrypt" className="flex flex-col gap-3" asChild>
+                    <form>
+                        <Label htmlFor="cipher">Message to decrypt</Label>
+                        <CanvasSecureTextInput
+                            id="cipher"
+                            value={cipher}
+                            onChange={setCipher}
+                            placeholder="Paste encrypted message…"
+                        />
+                        <Label htmlFor="plain">Decrypted message</Label>
+                        <CanvasSecureTextOutput id="plain" value={plain} />
+                        <p className="text-xs text-muted-foreground">{error}</p>
+                        <div className="flex justify-end gap-2">
+                            <Button variant="destructive" size="sm" onClick={handleClearCipher}>
+                                Clear
+                            </Button>
+                            <Button
+                                variant="outline"
+                                type="button"
+                                size="sm"
+                                onClick={handlePaste}
+                            >
+                                Paste
+                            </Button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                disabled={!contact}
+                                onClick={handleDecrypt}
+                            >
+                                Decrypt
+                            </Button>
+                        </div>
+                    </form>
                 </TabsContent>
             </Tabs>
         </section>
