@@ -6,13 +6,21 @@ import CanvasSecureTextInput from "../CanvasSecureTextInput";
 import CanvasSecureTextOutput from "../CanvasSecureTextOutput/CanvasSecureTextOutput";
 import { Label } from "../label";
 
-const MessageForm = ({ contact }: MessageFormProps) => {
-
-
-    const { mode, plain, cipher, error,
-        handleModeChange, handlePaste, handleEncrypt,
-        handleClearPlain, handleClearCipher, handleDecrypt,
-        setPlain, setCipher } = useMessageForm({ contact });
+const MessageForm = ({ contactId }: MessageFormProps) => {
+    const {
+        mode,
+        plain,
+        cipher,
+        error,
+        hasContact,
+        handleModeChange,
+        handlePaste,
+        handleEncrypt,
+        handleClear,
+        handleDecrypt,
+        setPlain,
+        setCipher,
+    } = useMessageForm({ contactId: contactId ?? null });
 
 
     return (
@@ -48,7 +56,7 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                         <Label htmlFor="cipher">Encrypted message</Label>
                         <CanvasSecureTextOutput id="cipher" value={cipher} />
                         <div className="flex justify-end gap-2">
-                            <Button variant="destructive" size="sm" onClick={handleClearPlain}>
+                            <Button variant="destructive" type='button' size="sm" onClick={handleClear}>
                                 Clear
                             </Button>
                             <Button
@@ -62,7 +70,7 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                             <Button
                                 type="button"
                                 size="sm"
-                                disabled={!plain.trim() || !contact}
+                                disabled={!plain.trim() || !hasContact}
                                 onClick={handleEncrypt}
                             >
                                 Encrypt
@@ -84,7 +92,7 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                         <CanvasSecureTextOutput id="plain" value={plain} />
                         <p className="text-xs text-muted-foreground">{error}</p>
                         <div className="flex justify-end gap-2">
-                            <Button variant="destructive" size="sm" onClick={handleClearCipher}>
+                            <Button variant="destructive" type='button' size="sm" onClick={handleClear}>
                                 Clear
                             </Button>
                             <Button
@@ -98,7 +106,7 @@ const MessageForm = ({ contact }: MessageFormProps) => {
                             <Button
                                 type="button"
                                 size="sm"
-                                disabled={!contact}
+                                disabled={!hasContact}
                                 onClick={handleDecrypt}
                             >
                                 Decrypt

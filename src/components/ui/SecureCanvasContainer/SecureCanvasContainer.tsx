@@ -32,6 +32,18 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
         enableResize,
     });
 
+    const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        const activeElement = document.activeElement as HTMLElement | null;
+
+        if (activeElement && event.currentTarget.contains(activeElement)) {
+            return;
+        }
+
+        if (event.currentTarget !== document.activeElement) {
+            event.currentTarget.focus();
+        }
+    };
+
     return (
         <div
             id={id || undefined}
@@ -45,6 +57,7 @@ const SecureCanvasContainer: React.FC<SecureCanvasContainerProps> = ({
             onKeyDown={onKeyDown}
             onFocus={onFocus}
             onBlur={onBlur}
+            onPointerDown={handlePointerDown}
             onMouseMove={showOverlay ? handleMouseMove : undefined}
             onMouseLeave={showOverlay ? handleMouseLeave : undefined}
             onTouchMove={showOverlay ? handleContainerTouchMove : undefined}

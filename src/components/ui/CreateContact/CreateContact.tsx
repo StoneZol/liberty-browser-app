@@ -6,6 +6,7 @@ import useCreateContactHook from './CreateContact.hooks';
 import { Separator } from '../separator';
 import { TemplatePopover } from '../popover';
 import CanvasSecureTextInput from '../CanvasSecureTextInput';
+import { toast } from 'sonner';
 
 interface CreateContactProps {
     onDone?: () => void;
@@ -39,6 +40,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                     </TemplatePopover>
                 </Label>
                 <CanvasSecureTextInput
+                    id='seedPhrase'
                     minHeight={40}
                     value={form.watch('seedPhrase')}
                     onChange={(value) => form.setValue('seedPhrase', value, { shouldValidate: true })}
@@ -92,9 +94,10 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                 <div className='flex flex-col gap-3'>
                     <div className='flex flex-col gap-3'>
                         <Label htmlFor='tag' className='text-xs font-medium uppercase tracking-wide'>
-                            Tag*
+                            Tag
                         </Label>
                         <CanvasSecureTextInput
+                            id='tag'
                             minHeight={40}
                             value={form.watch('tag')}
                             onChange={(value) => form.setValue('tag', value, { shouldValidate: true })}
@@ -110,6 +113,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                             Iterations* (0–1000000)
                         </Label>
                         <CanvasSecureTextInput
+                            id='iterations'
                             minHeight={40}
                             value={form.watch('iterations')}
                             onChange={handleIterationsChange}
@@ -126,6 +130,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                             Noise Length* (0–512)
                         </Label>
                         <CanvasSecureTextInput
+                            id='noiseLength'
                             minHeight={40}
                             value={form.watch('noiseLength')}
                             onChange={handleNoiseLengthChange}
@@ -142,8 +147,8 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                     <Label htmlFor='description' className='text-xs font-medium uppercase tracking-wide'>
                         Description
                     </Label>
-                    {/* <Input {...form.register('description')} type='password' id='description' /> */}
                     <CanvasSecureTextInput
+                        id='description'
                         minHeight={40}
                         value={form.watch('description')}
                         onChange={(value) => form.setValue('description', value, { shouldValidate: true })}
@@ -167,6 +172,7 @@ const CreateContact = ({ onDone }: CreateContactProps) => {
                 onClick={form.handleSubmit(() => {
                     onSubmit();
                     onDone?.();
+                    toast.success('Created!')
                 })}
             >
                 Create Contact

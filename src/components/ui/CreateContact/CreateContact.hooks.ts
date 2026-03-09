@@ -32,7 +32,7 @@ const useCreateContactHook = () => {
     const description = form.watch('description');
 
     const seedHash = getHash(seedPhrase);
-    const config = `${tag}-${noiseLengthStr}-${iterationsStr}`;
+    const config = `${noiseLengthStr}-${iterationsStr}`;
     const hash = getHash(config);
 
     const onSubmit = () => {

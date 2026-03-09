@@ -8,6 +8,7 @@ import { libertyCore } from "liberty-core";
 import { Separator } from "../separator";
 import { TemplatePopover } from "../popover";
 import CanvasSecureTextInput from "../CanvasSecureTextInput";
+import { toast } from "sonner";
 
 interface EditContactProps {
     contact: Contact | null;
@@ -64,6 +65,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                     </TemplatePopover>
                 </Label>
                 <CanvasSecureTextInput
+                    id="edit-seedPhrase"
                     minHeight={40}
                     value={form.watch("seedPhrase") ?? ""}
                     onChange={(value) => form.setValue("seedPhrase", value, { shouldValidate: true })}
@@ -98,9 +100,10 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                 <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-3">
                         <Label htmlFor="edit-tag" className="text-xs font-medium uppercase tracking-wide">
-                            Tag*
+                            Tag
                         </Label>
                         <CanvasSecureTextInput
+                            id="edit-tag"
                             minHeight={40}
                             value={form.watch("tag") ?? ""}
                             onChange={(value) => form.setValue("tag", value, { shouldValidate: true })}
@@ -121,6 +124,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                             Iterations* (0–1000000)
                         </Label>
                         <CanvasSecureTextInput
+                            id='edit-iterations'
                             minHeight={40}
                             value={form.watch("iterations") ?? ""}
                             onChange={handleIterationsChange}
@@ -142,6 +146,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                             Noise Length* (0–512)
                         </Label>
                         <CanvasSecureTextInput
+                            id="edit-noiseLength"
                             minHeight={40}
                             value={form.watch("noiseLength") ?? ""}
                             onChange={handleNoiseLengthChange}
@@ -164,6 +169,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                         Description
                     </Label>
                     <CanvasSecureTextInput
+                        id="edit-description"
                         minHeight={40}
                         value={form.watch("description") ?? ""}
                         onChange={(value) => form.setValue("description", value, { shouldValidate: true })}
@@ -220,6 +226,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                     onContinue={() => {
                         onSubmit();
                         setIsSaveConfirmOpen(false);
+                        toast.success('Saved!')
                         onDone?.();
                     }}
                 >

@@ -3,8 +3,10 @@ import { clipBoard } from "@/lib/ClipBoard";
 import { useState } from "react";
 import type { MessageFormProps } from "./MessageForm.types";
 
-export const useMessageForm = ({ contact }: MessageFormProps) => {
-    const { encryptMessage, decryptMessage } = useLibertyCoreStore();
+export const useMessageForm = ({ contactId }: MessageFormProps) => {
+    const { encryptMessage, decryptMessage, getStoreData } = useLibertyCoreStore();
+    const store = getStoreData();
+    const contact = store.data.contacts.find((c) => c.id === contactId) ?? null;
 
     const [mode, setMode] = useState<"encrypt" | "decrypt">("encrypt");
     const [plain, setPlain] = useState("");
@@ -27,11 +29,10 @@ export const useMessageForm = ({ contact }: MessageFormProps) => {
             setCipher(text);
         }
     }
-    const handleClearPlain = () => {
+    const handleClear = () => {
         setPlain("");
-    }
-    const handleClearCipher = () => {
         setCipher("");
+
     }
     const handleEncrypt = async () => {
         if (!contact) {
@@ -73,10 +74,10 @@ export const useMessageForm = ({ contact }: MessageFormProps) => {
         plain,
         cipher,
         error,
+        hasContact: !!contact,
         handleModeChange,
         handlePaste,
-        handleClearPlain,
-        handleClearCipher,
+        handleClear,
         handleEncrypt,
         handleDecrypt,
         setPlain,

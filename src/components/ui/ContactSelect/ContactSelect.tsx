@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { Contact } from "@/lib/types";
 import { Button } from "../button";
 import { TemplatePopover } from "../popover";
 import useContactSelect from "./ContactSelect.hooks";
@@ -8,7 +7,7 @@ import CanvasSecureTextInput from "../CanvasSecureTextInput";
 
 interface ContactSelectProps {
     value?: string | null;
-    onChange?: (contact: Contact | null) => void;
+    onChange?: (contactId: string | null) => void;
 }
 
 const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
@@ -22,11 +21,10 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
 
     const [open, setOpen] = useState(false);
 
-    const selected =
-        contacts.find((c) => c.id === value) ?? null;
+    const selected = contacts.find((c) => c.id === value) ?? null;
 
-    const handleSelect = (contact: Contact | null) => {
-        onChange?.(contact);
+    const handleSelect = (contactId: string | null) => {
+        onChange?.(contactId);
         setOpen(false);
     };
 
@@ -87,7 +85,7 @@ const ContactSelect = ({ value = null, onChange }: ContactSelectProps) => {
                                 type="button"
                                 className={`flex flex-col items-start gap-0.5 rounded-md px-2 py-0.5 text-left text-sm hover:bg-accent hover:text-accent-foreground ${isActive ? "bg-accent text-accent-foreground" : ""
                                     }`}
-                                onClick={() => handleSelect(contact)}
+                                onClick={() => handleSelect(contact.id)}
                             >
                                 <CanvasContactLabel label={label} />
                             </button>

@@ -131,11 +131,11 @@ const useEditContactHook = (contact: Contact | null) => {
 
     // visual "stored" config hash: упрощённый, считается из исходных значений, которые мы отрисовали в форме
     const storedConfigHash = contact
-        ? getHash(`${contact.tag}-${String(contact.noiseLength)}-${String(contact.iterations)}`)
+        ? getHash(`${String(contact.noiseLength)}-${String(contact.iterations)}`)
         : "";
 
     // visual "current" config hash: упрощённый, считается из текущих значений в форме
-    const previewConfig = `${tagWatch}-${noiseLengthWatch}-${iterationsWatch}`;
+    const previewConfig = `${noiseLengthWatch}-${iterationsWatch}`;
     const previewConfigHash = getHash(previewConfig);
 
     return {

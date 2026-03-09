@@ -88,8 +88,6 @@ const useSecureCanvasContainer = ({
     const handleContainerTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
         if (event.touches.length === 0) return;
 
-        event.preventDefault();
-
         const rect = event.currentTarget.getBoundingClientRect();
         const touch = event.touches[0];
         setSpot({
@@ -161,7 +159,7 @@ const useSecureCanvasContainer = ({
             window.removeEventListener("touchend", handleTouchEndInner);
         };
 
-        window.addEventListener("touchmove", handleTouchMoveInner);
+        window.addEventListener("touchmove", handleTouchMoveInner, { passive: false });
         window.addEventListener("touchend", handleTouchEndInner);
     };
 

@@ -7,7 +7,9 @@ export interface ContactRef {
 
 interface ContactStoreState {
     refs: ContactRef[];
+    selectedId: string | null;
     setRefs: (refs: ContactRef[]) => void;
+    setSelectedId: (id: string | null) => void;
     upsertRef: (ref: ContactRef) => void;
     removeRef: (id: string) => void;
 }
@@ -16,7 +18,9 @@ const useContactStore = create<ContactStoreState>((set) => (
 
     {
         refs: [],
+        selectedId: null,
         setRefs: (refs) => set({ refs }),
+        setSelectedId: (id) => set({ selectedId: id }),
         upsertRef: (ref) =>
             set((state) => {
                 const existingIndex = state.refs.findIndex((r) => r.id === ref.id);
@@ -30,6 +34,7 @@ const useContactStore = create<ContactStoreState>((set) => (
         removeRef: (id) =>
             set((state) => ({
                 refs: state.refs.filter((r) => r.id !== id),
+                selectedId: state.selectedId === id ? null : state.selectedId,
             })),
     }));
 

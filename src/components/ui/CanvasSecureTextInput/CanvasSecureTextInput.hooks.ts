@@ -20,6 +20,7 @@ interface UseCanvasSecureTextInputResult {
     isPlaceholder: boolean;
     displayText: string;
     handleKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    handleInput: (textareaValue: string, caretPosition?: number) => string | null;
     handleFocus: () => void;
     handleBlur: () => void;
     getLineColumnFromIndex: (index: number) => LineColumnInfo;
@@ -187,6 +188,47 @@ const useCanvasSecureTextInput = ({
         setIsFocused(false);
     };
 
+    // обработка input события с мобильных клавиатур
+    const handleInput = React.useCallback((textareaValue: string, caretPosition?: number): string | null => {
+        // если значение не изменилось, только обновляем позицию каретки
+        if (textareaValue === value) {
+            if (caretPosition !== undefined && caretPosition !== caretIndex) {
+                setCaretIndex(caretPosition);
+            }
+            return value; // возвращаем текущее значение для синхронизации
+        }
+
+        // находим позицию первого различия
+        let diffStart = 0;
+        while (diffStart < value.length && diffStart < textareaValue.length && value[diffStart] === textareaValue[diffStart]) {
+            diffStart++;
+        }
+
+        // находим позицию последнего различия с конца
+        let diffEndOld = value.length;
+        let diffEndNew = textareaValue.length;
+        while (diffEndOld > diffStart && diffEndNew > diffStart && value[diffEndOld - 1] === textareaValue[diffEndNew - 1]) {
+            diffEndOld--;
+            diffEndNew--;
+        }
+
+        // вычисляем что было добавлено
+        const inserted = textareaValue.slice(diffStart, diffEndNew);
+
+        // новая позиция каретки: используем переданную позицию или вычисляем
+        const newCaretIndex = caretPosition !== undefined ? caretPosition : (diffStart + inserted.length);
+
+        // формируем новое значение
+        const next = value.slice(0, diffStart) + inserted + value.slice(diffEndOld);
+
+        if (next !== value) {
+            onChange(next);
+        }
+        setCaretIndex(newCaretIndex);
+
+        return next; // возвращаем новое значение для синхронизации textarea
+    }, [value, caretIndex, onChange]);
+
     return {
         caretIndex,
         isFocused,
@@ -194,6 +236,7 @@ const useCanvasSecureTextInput = ({
         isPlaceholder,
         displayText,
         handleKeyDown,
+        handleInput,
         handleFocus,
         handleBlur,
         getLineColumnFromIndex,
