@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type screenType = 'reg' | 'login' | 'main' | 'about' | 'create_contact' | 'edit_contact'
+export type screenType = 'reg' | 'login' | 'settings' | 'main' | 'about' | 'create_contact' | 'edit_contact'
 
 interface ScreenStore {
     screen: screenType;

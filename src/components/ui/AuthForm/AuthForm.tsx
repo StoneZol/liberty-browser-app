@@ -1,5 +1,4 @@
 import { Button } from "../button";
-// import { Input } from "../input";
 import { Label } from "../label";
 import useAuthFormHook from "./AuthForm.hooks";
 import { AlertDialogComponent } from './../alert-dialog';
@@ -21,6 +20,7 @@ const AuthForm = () => {
                     onChange={(value) => form.setValue('Password', value, { shouldValidate: true })}
                     mask
                 />
+                {form.formState.errors.Password && <p className='text-destructive'>{form.formState.errors.Password.message}</p>}
                 <Button type="submit" onClick={form.handleSubmit(onSubmit)}>SignIn</Button>
 
                 <AlertDialogComponent

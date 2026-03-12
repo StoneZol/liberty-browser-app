@@ -9,7 +9,7 @@ const RegForm = () => {
     const { form, onSubmit } = useRegFormHook()
     return (
         <section className='flex flex-col gap-4 p-4'>
-            <h2 className='text-2xl font-bold'>Yo Anon! We don't care who u r. 11</h2>
+            <h2 className='text-2xl font-bold'>Yo Anon! We don't care who u r</h2>
             <form className='flex flex-col gap-4 bg-card p-4 rounded-lg'>
                 <div className='flex flex-col gap-2'>
                     <Label htmlFor='Password'>Password</Label>

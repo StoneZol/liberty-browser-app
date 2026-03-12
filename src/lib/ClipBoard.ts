@@ -1,23 +1,31 @@
 import { toast } from 'sonner';
 
-const copyToClipboard = (text: string) => {
+const copyToClipboard = (text: string, withToast: boolean = true) => {
     try {
         navigator.clipboard.writeText(text);
-        toast.success('Copied!');
+        if (withToast) {
+            toast.success('Copied!');
+        }
     } catch (error) {
         console.error(error);
-        toast.error('Failed to copy:(');
+        if (withToast) {
+            toast.error('Failed to copy:(');
+        }
     }
 };
 
-const pasteFromClipboard = async () => {
+const pasteFromClipboard = async (withToast: boolean = true) => {
     try {
         const text = await navigator.clipboard.readText();
-        toast.success('Pasted!');
+        if (withToast) {
+            toast.success('Pasted!');
+        }
         return text;
     } catch (error) {
         console.error(error);
-        toast.error('Failed to paste:(');
+        if (withToast) {
+            toast.error('Failed to paste:(');
+        }
         return null;
     }
 };

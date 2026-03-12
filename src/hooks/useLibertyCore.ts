@@ -68,7 +68,17 @@ export const useLibertyCoreStore = () => {
         ls.setData('LibertyStore', encryptedData)
     }
 
+    const checkAuth = () => {
+        try {
+            const storeData = getStoreData()
+            return storeData.data.user === "anon"
+        } catch {
+            return false
+        }
+    }
+
     return {
+        checkAuth,
         hasReg,
         getSalt,
         getResetPassHash,

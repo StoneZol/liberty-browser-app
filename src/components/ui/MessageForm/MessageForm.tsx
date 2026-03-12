@@ -5,6 +5,7 @@ import { useMessageForm } from "./MessageForm.hooks";
 import CanvasSecureTextInput from "../CanvasSecureTextInput";
 import CanvasSecureTextOutput from "../CanvasSecureTextOutput/CanvasSecureTextOutput";
 import { Label } from "../label";
+import { clipBoard } from "@/lib/ClipBoard";
 
 const MessageForm = ({ contactId }: MessageFormProps) => {
     const {
@@ -25,15 +26,6 @@ const MessageForm = ({ contactId }: MessageFormProps) => {
 
     return (
         <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
-            <div className="flex items-center justify-between gap-2">
-                <div className="space-y-1">
-                    <p className="text-sm font-semibold">Encrypt / decrypt</p>
-                    <p className="text-xs text-muted-foreground">
-                        Use your selected contact config to wrap or unwrap messages over any transport.
-                    </p>
-                </div>
-            </div>
-
             <Tabs
                 value={mode}
                 onValueChange={handleModeChange}
@@ -90,7 +82,7 @@ const MessageForm = ({ contactId }: MessageFormProps) => {
                         />
                         <Label htmlFor="plain">Decrypted message</Label>
                         <CanvasSecureTextOutput id="plain" value={plain} />
-                        <p className="text-xs text-muted-foreground">{error}</p>
+                        <p className="text-xs text-destructive empty:hidden">{error}</p>
                         <div className="flex justify-end gap-2">
                             <Button variant="destructive" type='button' size="sm" onClick={handleClear}>
                                 Clear
@@ -103,10 +95,13 @@ const MessageForm = ({ contactId }: MessageFormProps) => {
                             >
                                 Paste
                             </Button>
+                            <Button variant="outline" type="button" size="sm" onClick={() => clipBoard.copy(plain)}>
+                                Copy
+                            </Button>
                             <Button
                                 type="button"
                                 size="sm"
-                                disabled={!hasContact}
+                                disabled={!cipher.trim() || !hasContact}
                                 onClick={handleDecrypt}
                             >
                                 Decrypt

@@ -5,7 +5,7 @@ import useScreenStore from '@/stores/screenStore';
 import { useLibertyCoreStore } from '@/hooks/useLibertyCore';
 
 const useAuthFormHook = () => {
-    const { deleteAllData, getStoreData, getHash, derivePassword, getResetPassHash } = useLibertyCoreStore()
+    const { deleteAllData, getHash, derivePassword, getResetPassHash, checkAuth } = useLibertyCoreStore()
     const { setScreen } = useScreenStore()
     const handleResetData = () => {
         deleteAllData()
@@ -18,18 +18,28 @@ const useAuthFormHook = () => {
         }
     })
     const onSubmit = (data: AuthFormSchemaType) => {
-        const passwordHash = getHash(data.Password)
-        console.log(passwordHash)
-        console.log(getResetPassHash())
+        const passwordHash = getHash(data.Password);
         if (passwordHash === getResetPassHash()) {
-            deleteAllData()
-            window.location.reload()
-            return
+            deleteAllData();
+            window.location.reload();
+            return;
         }
-        derivePassword(passwordHash)
-        const storeData = getStoreData()
-        if (storeData.data.user === 'anon') {
-            setScreen('main')
+
+        try {
+            derivePassword(passwordHash);
+            if (checkAuth()) {
+                setScreen("main");
+            } else {
+                form.setError("Password", {
+                    type: "manual",
+                    message: "Wrong password",
+                });
+            }
+        } catch {
+            form.setError("Password", {
+                type: "manual",
+                message: "Wrong password",
+            });
         }
     }
     return {
