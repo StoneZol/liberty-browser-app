@@ -1,13 +1,14 @@
 import { clipBoard } from '@/lib/ClipBoard';
 import { ls } from '@/lib/localstorage';
+import { normalizeStr } from '@/lib/normalizeStr';
 import { toast } from 'sonner';
 
 const useImpExpDataHook = () => {
     const handleImportData = async () => {
         const pasteData = await clipBoard.paste(false)
-        console.log(pasteData)
         if (!pasteData) return
-        const [salt, resetPassHash, LibertyStore] = pasteData.split(';')
+        const normalizedPasteData = normalizeStr(pasteData)
+        const [salt, resetPassHash, LibertyStore] = normalizedPasteData.split(';')
         if (!salt || !resetPassHash || !LibertyStore) {
             toast.error('Valid data not found(');
             return
@@ -23,7 +24,6 @@ const useImpExpDataHook = () => {
         const resetPassHash = ls.getData('resetPassHash')
         const LibertyStore = ls.getData('LibertyStore')
         const result = salt + ";" + resetPassHash + ";" + LibertyStore
-        console.log(result)
         if (!salt || !resetPassHash || !LibertyStore) {
             toast.error('Valid data not found(');
             return

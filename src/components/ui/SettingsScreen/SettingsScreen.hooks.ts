@@ -5,7 +5,6 @@ const useSettingsScreenHook = () => {
     const { checkAuth, hasReg } = useLibertyCoreStore()
     const { setScreen } = useScreenStore()
     const handleBack = () => {
-        console.log(checkAuth())
         if (!hasReg) {
             setScreen('reg')
             return

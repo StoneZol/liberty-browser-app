@@ -16,9 +16,8 @@ const defaultLibertyStore: LibertyStore = {
 
 
 const useRegFormHook = () => {
-    const { hasReg, getStoreData } = useLibertyCoreStore()
+    const { getStoreData } = useLibertyCoreStore()
     const { setScreen } = useScreenStore()
-    console.log(hasReg)
     const form = useForm({
         resolver: zodResolver(RegFormSchema),
         defaultValues: {

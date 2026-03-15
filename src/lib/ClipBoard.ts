@@ -6,8 +6,8 @@ const copyToClipboard = (text: string, withToast: boolean = true) => {
         if (withToast) {
             toast.success('Copied!');
         }
-    } catch (error) {
-        console.error(error);
+    } catch {
+
         if (withToast) {
             toast.error('Failed to copy:(');
         }
@@ -21,8 +21,7 @@ const pasteFromClipboard = async (withToast: boolean = true) => {
             toast.success('Pasted!');
         }
         return text;
-    } catch (error) {
-        console.error(error);
+    } catch {
         if (withToast) {
             toast.error('Failed to paste:(');
         }
