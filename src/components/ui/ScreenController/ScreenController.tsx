@@ -1,5 +1,4 @@
 import { AuthForm } from '../AuthForm';
-import RegForm from '../RegForm/RegForm';
 import useScreenStore from '@/stores/screenStore';
 import { useLibertyCoreStore } from '@/hooks/useLibertyCore';
 import { useEffect } from 'react';
@@ -7,6 +6,7 @@ import { MainScreen } from '../MainScreen';
 import { CreateContactScreen } from '../CreateContactScreen';
 import { EditContactScreen } from '../EditContactScreeen';
 import { SettingsScreen } from '../SettingsScreen';
+import { RegScreen } from '../RegScreen';
 const ScreenController = () => {
     const { hasReg } = useLibertyCoreStore()
     const { screen, setScreen } = useScreenStore()
@@ -17,7 +17,7 @@ const ScreenController = () => {
     }, [hasReg])
     switch (screen) {
         case 'reg':
-            return <RegForm />
+            return <RegScreen />
         case 'login':
             return <AuthForm />
         case 'main':

@@ -20,7 +20,8 @@ const useSettingsScreenHook = () => {
     }
 
     return {
-        handleBack
+        handleBack,
+        isAuth: checkAuth()
     }
 }
 

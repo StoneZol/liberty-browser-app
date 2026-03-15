@@ -201,7 +201,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
             <div className="flex justify-between gap-2 pt-2">
                 <AlertDialogComponent
                     title="Delete this contact?"
-                    description="This will remove the contact from your local encrypted store."
+                    description="This will remove the contact from ur local encrypted store."
                     actionText="Delete"
                     cancelText="Cancel"
                     onContinue={() => {
@@ -220,7 +220,7 @@ const EditContact = ({ contact, onDone }: EditContactProps) => {
                     open={isSaveConfirmOpen}
                     onOpenChange={setIsSaveConfirmOpen}
                     title="Save changes?"
-                    description="We&apos;ll update this contact config in your local encrypted store."
+                    description="We&apos;ll update this contact config in ur local encrypted store."
                     actionText="Save"
                     cancelText="Cancel"
                     onContinue={() => {

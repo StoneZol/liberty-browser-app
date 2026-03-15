@@ -16,7 +16,7 @@ const defaultLibertyStore: LibertyStore = {
 
 
 const useRegFormHook = () => {
-    const { hasReg } = useLibertyCoreStore()
+    const { hasReg, getStoreData } = useLibertyCoreStore()
     const { setScreen } = useScreenStore()
     console.log(hasReg)
     const form = useForm({
@@ -40,9 +40,24 @@ const useRegFormHook = () => {
         form.reset()
         setScreen('login')
     }
+
+    const onSubmitUpdatePassword = (data: RegFormSchemaType) => {
+        const newSalt = libertyCore.crypto.generateSalt()
+        const oldData = getStoreData()
+        const newMainPasswordHash = libertyCore.crypto.hash(data.Password)
+        const newResetPassHash = libertyCore.crypto.hash(data.AlertPassword)
+        const newCreatepass = libertyCore.crypto.deriveKey(newMainPasswordHash, newSalt)
+        const newEncryptedLibertyStore = libertyCore.obj.encrypt({ obj: oldData, key: newCreatepass })
+        ls.setData('salt', newSalt)
+        ls.setData('resetPassHash', newResetPassHash)
+        ls.setData('LibertyStore', newEncryptedLibertyStore)
+        form.reset()
+        setScreen('login')
+    }
     return {
         form,
-        onSubmit
+        onSubmit,
+        onSubmitUpdatePassword
     }
 }
 
