@@ -42,7 +42,7 @@ const SettingsScreen = () => {
                         <h2 className='text-xl font-semibold'>Data Management</h2>
                     </div>
                     <div className='flex flex-col gap-3 pl-0 md:pl-12'>
-                        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
+                        {isAuth && (<div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
                             <div className='flex flex-col gap-1'>
                                 <span className='text-sm font-medium'>Export Data</span>
                                 <span className='text-xs text-muted-foreground'>Copy ur data in the clipboard</span>
@@ -50,7 +50,7 @@ const SettingsScreen = () => {
                             <div className='self-start sm:self-auto'>
                                 <ExportData />
                             </div>
-                        </div>
+                        </div>)}
                         <Separator />
                         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
                             <div className='flex flex-col gap-1'>
@@ -73,9 +73,7 @@ const SettingsScreen = () => {
                             </div>
                             <h2 className='text-xl font-semibold'>Security</h2>
                         </div>
-                        <div className='pl-12'>
-                            <RegForm isUpdatePassword={true} />
-                        </div>
+                        <RegForm isUpdatePassword={true} />
                     </div>
                 )}
             </div>

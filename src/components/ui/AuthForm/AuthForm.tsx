@@ -7,7 +7,7 @@ import CanvasSecureTextInput from "../CanvasSecureTextInput";
 import { Separator } from '../separator';
 
 const AuthForm = () => {
-    const { form, onSubmit, handleResetData } = useAuthFormHook()
+    const { form, onSubmit, handleResetData, handleIterationsChange } = useAuthFormHook()
     return (
         <section className="flex flex-col gap-6 p-6 max-w-2xl mx-auto">
             {/* Header */}
@@ -24,6 +24,20 @@ const AuthForm = () => {
             {/* Login Form Card */}
             <div className='bg-card border border-border rounded-lg p-6 shadow-sm'>
                 <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className='flex flex-col gap-2'>
+                        <Label htmlFor="iterations">Iterations</Label>
+                        <CanvasSecureTextInput
+                            minHeight={40}
+                            id="iterations"
+                            value={form.watch('Iterations')}
+                            enableOverlay={false}
+                            onChange={handleIterationsChange}
+                            mask
+                        />
+                        {form.formState.errors.Iterations && (
+                            <p className='text-sm text-destructive'>{form.formState.errors.Iterations.message}</p>
+                        )}
+                    </div>
                     <div className='flex flex-col gap-2'>
                         <Label htmlFor="password">Password</Label>
                         <CanvasSecureTextInput

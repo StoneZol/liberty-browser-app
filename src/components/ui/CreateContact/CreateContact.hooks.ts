@@ -5,6 +5,7 @@ import { useLibertyCoreStore } from '@/hooks/useLibertyCore';
 import { v7 as uuidv7 } from 'uuid';
 import useContactStore from '@/stores/contactStore';
 import type { Contact } from '@/lib/types';
+import { setNumericFieldFromCanvas } from '@/lib/setNumericFieldFromCanvas';
 
 const useCreateContactHook = () => {
     const { getStoreData, setStoreData, getHash } = useLibertyCoreStore();
@@ -58,31 +59,12 @@ const useCreateContactHook = () => {
         form.reset();
     };
 
-    const setNumericFieldFromCanvas = (
-        raw: string,
-        fieldName: keyof ContactFormType,
-        limit: number,
-    ) => {
-        const digitsOnly = raw.replace(/\D/g, '');
-
-        if (digitsOnly === '') {
-            form.setValue(fieldName, '', { shouldValidate: true });
-            return;
-        }
-
-        let numeric = parseInt(digitsOnly, 10);
-        if (numeric > limit) numeric = limit;
-
-        const next = String(numeric);
-        form.setValue(fieldName, next, { shouldValidate: true });
-    };
-
     const handleNoiseLengthChange = (raw: string) => {
-        setNumericFieldFromCanvas(raw, 'noiseLength', 512);
+        setNumericFieldFromCanvas(form.setValue, raw, 'noiseLength', 512);
     };
 
     const handleIterationsChange = (raw: string) => {
-        setNumericFieldFromCanvas(raw, 'iterations', 1_000_000);
+        setNumericFieldFromCanvas(form.setValue, raw, 'iterations', 1_000_000);
     };
 
     return {

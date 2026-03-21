@@ -6,11 +6,25 @@ import CanvasSecureTextInput from "../CanvasSecureTextInput";
 
 
 const RegForm = ({ isUpdatePassword = false }: { isUpdatePassword?: boolean }) => {
-    const { form, onSubmit, onSubmitUpdatePassword } = useRegFormHook()
+    const { form, onSubmit, onSubmitUpdatePassword, handleIterationsChange } = useRegFormHook()
 
     const onSubmitHandler = isUpdatePassword ? onSubmitUpdatePassword : onSubmit
     return (
         <form className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-2'>
+                <Label htmlFor='Iterations'>Iterations</Label>
+                <CanvasSecureTextInput
+                    minHeight={40}
+                    id="Iterations"
+                    value={form.watch('Iterations')}
+                    onChange={handleIterationsChange}
+                    mask={true}
+                    enableOverlay={false}
+                />
+                {form.formState.errors.Iterations && (
+                    <p className='text-red-500'>{form.formState.errors.Iterations.message}</p>
+                )}
+            </div>
             <div className='flex flex-col gap-2'>
                 <Label htmlFor='Password'>Password</Label>
                 <CanvasSecureTextInput

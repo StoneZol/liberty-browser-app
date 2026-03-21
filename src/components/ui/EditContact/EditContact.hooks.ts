@@ -4,6 +4,7 @@ import { useLibertyCoreStore } from "@/hooks/useLibertyCore";
 import { EditContactFormSchema, type EditContactFormType } from "../CreateContact/CreateContact.types";
 import type { Contact } from "@/lib/types";
 import useContactStore from "@/stores/contactStore";
+import { setNumericFieldFromCanvas } from "@/lib/setNumericFieldFromCanvas";
 
 const useEditContactHook = (contact: Contact | null) => {
     const { getStoreData, setStoreData, getHash } = useLibertyCoreStore();
@@ -97,31 +98,12 @@ const useEditContactHook = (contact: Contact | null) => {
         removeRef(contact.id);
     };
 
-    const setNumericFieldFromCanvas = (
-        raw: string,
-        fieldName: keyof EditContactFormType,
-        limit: number,
-    ) => {
-        const digitsOnly = raw.replace(/\D/g, "");
-
-        if (digitsOnly === "") {
-            form.setValue(fieldName, "" as never, { shouldValidate: true });
-            return;
-        }
-
-        let numeric = parseInt(digitsOnly, 10);
-        if (numeric > limit) numeric = limit;
-
-        const next = String(numeric);
-        form.setValue(fieldName, next as never, { shouldValidate: true });
-    };
-
     const handleNoiseLengthChange = (raw: string) => {
-        setNumericFieldFromCanvas(raw, "noiseLength", 512);
+        setNumericFieldFromCanvas(form.setValue, raw, "noiseLength", 512);
     };
 
     const handleIterationsChange = (raw: string) => {
-        setNumericFieldFromCanvas(raw, "iterations", 1_000_000);
+        setNumericFieldFromCanvas(form.setValue, raw, "iterations", 1_000_000);
     };
 
     const storedSeedHash = contact?.seedHash ?? "";

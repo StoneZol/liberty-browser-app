@@ -11,7 +11,41 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [
-        VitePWA(),
+        VitePWA({
+            registerType: 'autoUpdate',
+            includeAssets: ['liberty128.png', 'liberty48.png'],
+            manifest: {
+                name: 'Liberty',
+                short_name: 'Liberty',
+                description: 'Liberty cryptographic core for secure messaging',
+                theme_color: '#0f172a',
+                background_color: '#0f172a',
+                display: 'standalone',
+                orientation: 'portrait',
+                scope: '/',
+                start_url: '/',
+                icons: [
+                    {
+                        src: '/liberty128.png',
+                        sizes: '128x128',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
+                    {
+                        src: '/liberty128.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
+                ],
+            },
+            workbox: {
+                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+            },
+            devOptions: {
+                enabled: true,
+            },
+        }),
         react(),
         tailwindcss(),
         {

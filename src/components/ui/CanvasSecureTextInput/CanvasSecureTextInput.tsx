@@ -150,7 +150,7 @@ const CanvasSecureTextInput: React.FC<CanvasSecureTextInputProps> = ({
                 <>
                     <textarea
                         ref={hiddenInputRef}
-                        className="absolute left-0 top-0 h-px w-px opacity-0 pointer-events-none"
+                        className="absolute left-0 top-0 h-full w-full opacity-0 pointer-events-none"
                         autoCapitalize="none"
                         autoCorrect="off"
                         spellCheck={false}

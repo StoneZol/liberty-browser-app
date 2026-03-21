@@ -16,8 +16,8 @@ export const useLibertyCoreStore = () => {
         return ls.getData('resetPassHash')
     }
 
-    const derivePassword = (pass: string) => {
-        const hashpass = libertyCore.crypto.deriveKey(pass, getSalt())
+    const derivePassword = (passwordHash: string, iterations: number) => {
+        const hashpass = libertyCore.crypto.deriveKey(passwordHash, getSalt(), iterations)
         setPassHash(hashpass)
         return hashpass
     }
